@@ -11,6 +11,12 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value=".activity.SearchActivity" />
+        <provider
+            android:authorities="io.github.jiezhi.MySuggestionProvider"
+            android:name=".provider.MySuggestionProvider" />
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name">
@@ -19,11 +25,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <meta-data android:name="android.app.default_searchable"
-                android:value=".activity.SearchActivity" />
         </activity>
-        <activity android:name=".activity.SearchActivity">
+        <activity android:name=".activity.SearchActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -32,12 +36,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".activity.DetailActivity" />
-        <activity
-            android:name=".activity.AppbarActivity"
-            android:label="@string/title_activity_appbar"
-            android:theme="@style/AppTheme">
 
-        </activity>
     </application>
 
 </manifest>

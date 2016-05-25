@@ -77,9 +77,9 @@ public class MainActivity extends BaseActivity
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    onSearchRequested();
                     Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                    onSearchRequested();
                 }
             });
 
@@ -91,6 +91,16 @@ public class MainActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+
+    @Override
+    public boolean onSearchRequested() {
+        Log.d(TAG, "onSearchRequested called");
+        Bundle appData = new Bundle();
+        appData.putBoolean("test", true);
+        startSearch(null, false, appData, false);
+        return true;
     }
 
     @Override
@@ -114,6 +124,9 @@ public class MainActivity extends BaseActivity
 //        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setQueryRefinementEnabled(true);
 
         MenuItemCompat.OnActionExpandListener expandListener = new MenuItemCompat.OnActionExpandListener() {
             @Override
