@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/book_item_container"
+    android:layout_width="196dp"
+    android:layout_height="248dp"
+    android:orientation="vertical"
+    android:scaleX="0"
+    android:scaleY="0">
+
+    <ImageView
+        android:id="@+id/book_item_img"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/book_without_palette"
+        android:scaleType="centerCrop"
+        android:transitionName="bookCover" />
+
+    <RelativeLayout
+        android:id="@+id/book_item_text_container"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="@color/book_without_palette"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:id="@+id/book_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text="@string/app_name"
+            android:lines="1"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/book_item_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/book_item_title"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/text_without_palette"
+            android:textSize="15sp" />
+    </RelativeLayout>
+</LinearLayout>

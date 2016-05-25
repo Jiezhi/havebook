@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">HaveBook</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="hello">Hello</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc mollis nunc massa, quis suscipit orci mattis a. Nulla rutrum fringilla finibus. Morbi ac dui in lacus finibus hendrerit. Ut vestibulum. Nulla rutrum fringilla finibus. Morbi ac dui in lacus finibus hendrerit. Ut vestibulum. Nulla rutrum fringilla finibus. Morbi ac dui in lacus finibus hendrerit. Ut vestibulum, Nulla rutrum fringilla finibus. Morbi ac dui in lacus finibus hendrerit. Ut vestibulum, Morbi ac dui in lacus finibus hendrerit. Ut vestibulum, Nulla rutrum fringilla finibus. Morbi ac dui in lacus finibus hendrerit. Ut vestibulum, Ut vestibulum, Nulla rutrum fringilla finibus. Morbi ac dui in lacus finibus hendrerit. Ut vestibulum, Morbi ac dui in lacus finibus hendrerit. Ut vestibulum, Nulla rutrum fringilla finibus. Morbi ac dui in lacus finibus hendrerit. Ut vestibulum</string>
+    <string name="summary">内容简介...</string>
+    <string name="title_activity_appbar">AppbarActivity</string>
+    <string name="search_hint">Search books</string>
+</resources>
