@@ -4,6 +4,9 @@
 >
 > 书一多就比较混乱，所以索性尝试做个程序将数据整合起来。
 
+##演示
+![](media/May-26-2016 13-27-19-s.gif)
+
 ## 参考：
 
 * [OpenLibra-Material](https://github.com/saulmm/OpenLibra-Material)
