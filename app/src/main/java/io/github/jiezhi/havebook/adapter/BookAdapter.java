@@ -69,7 +69,11 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         currentDoubanBook = doubanBooks.get(position);
         holder.bookTitle.setText(currentDoubanBook.getTitle());
-        holder.bookAuthor.setText(currentDoubanBook.getAuthors()[0]);
+        StringBuilder sb = new StringBuilder();
+        String[] authors = currentDoubanBook.getAuthors();
+        for (String author : authors)
+            sb.append(author).append(" ");
+        holder.bookAuthor.setText(sb.toString());
         holder.bookCover.setDrawingCacheEnabled(true);
 //        bitmap = holder.bookCover.getDrawingCache();
 

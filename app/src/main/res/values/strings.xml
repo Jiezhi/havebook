@@ -10,4 +10,6 @@
     <string name="summary">内容简介...</string>
     <string name="title_activity_appbar">AppbarActivity</string>
     <string name="search_hint">Search books</string>
+    <string name="action_search">search</string>
+    <string name="action_scan">scan</string>
 </resources>

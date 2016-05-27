@@ -3,6 +3,7 @@
     package="io.github.jiezhi.havebook">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".app.MyApplication"
@@ -36,6 +37,10 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".activity.DetailActivity" />
+
+        <activity android:name=".activity.ScannerActivity" />
+
+        <activity android:name=".activity.SimpleBookActivity" />
 
     </application>
 

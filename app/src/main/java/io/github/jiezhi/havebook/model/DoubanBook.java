@@ -157,7 +157,6 @@ public class DoubanBook implements Serializable {
         this.publisher = publisher;
     }
 
-
     public String getSubtitle() {
         return subtitle;
     }

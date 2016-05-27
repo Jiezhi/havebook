@@ -2,6 +2,7 @@ package io.github.jiezhi.havebook.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -157,6 +158,8 @@ public class MainActivity extends BaseActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_scan) {
+            startActivity(new Intent(MainActivity.this, ScannerActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
