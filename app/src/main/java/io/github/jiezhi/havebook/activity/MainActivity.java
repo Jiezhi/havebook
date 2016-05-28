@@ -41,6 +41,8 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.book_info);
 
+        startActivity(new Intent(MainActivity.this, SimpleBookActivity.class));
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -78,7 +80,7 @@ public class MainActivity extends BaseActivity
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onSearchRequested();
+//                    onSearchRequested();
                     Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }

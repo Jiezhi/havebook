@@ -25,7 +25,7 @@ import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.app.MySingleton;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
 import io.github.jiezhi.havebook.model.DoubanBook;
-import io.github.jiezhi.havebook.utils.Utils;
+import io.github.jiezhi.havebook.utils.ViewUtils;
 
 /**
  * Created by jiezhi on 5/25/16.
@@ -124,7 +124,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                             onBookClickedListener.onclick(v, position);
                         }
                     });
-                    Utils.animateViewColor(holder.bookTextContainer, defaultbkgcolor, vibrantSwatch.getRgb());
+                    ViewUtils.animateViewColor(holder.bookTextContainer, defaultbkgcolor, vibrantSwatch.getRgb());
                 } else {
                     Log.e(TAG, "BookAdapter onGenerated - The VibrantSwatch were null at: " + position);
                 }

@@ -3,6 +3,11 @@ package io.github.jiezhi.havebook.activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.graphics.Palette;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +38,8 @@ public class SimpleBookActivity extends BaseActivity {
     private TextView bookRating;
     private TextView bookPublisher;
     private TextView bookSummary;
+    private AppBarLayout appbarLayout;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +47,20 @@ public class SimpleBookActivity extends BaseActivity {
         setContentView(R.layout.book_detail);
 
         String isbn = getIntent().getStringExtra("isbn");
+        if (isbn == null) isbn = "9787115416292";
         Log.d(TAG, "isbn: " + isbn);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle(isbn);
+
         initView();
         getBookInfoByISBN(isbn);
     }
@@ -52,6 +72,8 @@ public class SimpleBookActivity extends BaseActivity {
         bookRating = (TextView) findViewById(R.id.book_rating);
         bookPublisher = (TextView) findViewById(R.id.book_publisher);
         bookSummary = (TextView) findViewById(R.id.book_summary);
+
+        appbarLayout = (AppBarLayout) findViewById(R.id.appbar);
     }
 
     private void getBookInfoByISBN(String isbn) {
@@ -65,7 +87,7 @@ public class SimpleBookActivity extends BaseActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject object) {
-                        Log.d(TAG, object.toString());
+//                        Log.d(TAG, object.toString());
                         DoubanBook doubanBook = JsonUtils.parseBook(object);
 
                         loadBookData(doubanBook);
@@ -86,12 +108,14 @@ public class SimpleBookActivity extends BaseActivity {
         bookTitle.setText(doubanBook.getTitle());
         bookPublisher.setText(doubanBook.getPublisher());
         bookSummary.setText(doubanBook.getSummary());
+        collapsingToolbarLayout.setTitle(doubanBook.getTitle());
 
         ImageRequest imageRequest = new ImageRequest(doubanBook.getImages().get("large"),
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap bitmap) {
                         bookCover.setImageBitmap(bitmap);
+                        setPalette(bitmap);
                     }
                 }, 0, 0, null,
                 new Response.ErrorListener() {
@@ -101,6 +125,18 @@ public class SimpleBookActivity extends BaseActivity {
                     }
                 });
         requestQueue.add(imageRequest);
+    }
+
+    private void setPalette(Bitmap bitmap) {
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                Palette.Swatch swatch = palette.getVibrantSwatch();
+                appbarLayout.setBackgroundColor(swatch.getRgb());
+//                bookSummary.setTextColor(swatch.getBodyTextColor());
+//                bookTitle.setTextColor(swatch.getTitleTextColor());
+            }
+        });
     }
 
 

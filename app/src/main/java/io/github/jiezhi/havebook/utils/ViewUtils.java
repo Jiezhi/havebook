@@ -10,7 +10,7 @@ import android.view.animation.PathInterpolator;
  * Created by jiezhi on 5/25/16.
  * Function:
  */
-public class Utils {
+public class ViewUtils {
     private static final String TAG = "Utils";
     private static final long COLOR_ANIMATION_DURATION = 1000;
     private static final long DEFAULT_DELAY = 0;
@@ -54,4 +54,5 @@ public class Utils {
     public static ViewPropertyAnimator hideViewByScaleY(View view) {
         return hideViewByScale(view, DEFAULT_DELAY, 1, 0);
     }
+
 }

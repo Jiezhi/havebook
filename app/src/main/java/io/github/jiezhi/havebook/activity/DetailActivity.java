@@ -22,7 +22,7 @@ import android.widget.Toast;
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
 import io.github.jiezhi.havebook.model.DoubanBook;
-import io.github.jiezhi.havebook.utils.Utils;
+import io.github.jiezhi.havebook.utils.ViewUtils;
 
 /**
  * Created by jiezhi on 5/25/16.
@@ -123,7 +123,7 @@ public class DetailActivity extends BaseActivity {
 
             @Override
             public void onTransitionEnd(Transition transition) {
-                ViewPropertyAnimator showTitleAnimator = Utils.showViewByScale(mainContainer);
+                ViewPropertyAnimator showTitleAnimator = ViewUtils.showViewByScale(mainContainer);
                 showTitleAnimator.setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -135,8 +135,8 @@ public class DetailActivity extends BaseActivity {
                         titlesContainer.startAnimation(AnimationUtils.loadAnimation(DetailActivity.this, R.anim.alpha_on));
                         titlesContainer.setVisibility(View.VISIBLE);
 
-                        Utils.showViewByScale(faButton).start();
-                        Utils.showViewByScale(bookInfoLayout).start();
+                        ViewUtils.showViewByScale(faButton).start();
+                        ViewUtils.showViewByScale(bookInfoLayout).start();
                     }
 
                     @Override
@@ -197,9 +197,9 @@ public class DetailActivity extends BaseActivity {
 
 
         // Confugur the views setting animation start point
-        Utils.configHideYView(contentCard);
-        Utils.configHideYView(bookInfoLayout);
-        Utils.configHideYView(mainContainer);
+        ViewUtils.configHideYView(contentCard);
+        ViewUtils.configHideYView(bookInfoLayout);
+        ViewUtils.configHideYView(mainContainer);
 
 
     }
@@ -207,10 +207,10 @@ public class DetailActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        ViewPropertyAnimator hideTitleAnimator = Utils.hideViewByScaleXY(faButton);
+        ViewPropertyAnimator hideTitleAnimator = ViewUtils.hideViewByScaleXY(faButton);
         titlesContainer.startAnimation(AnimationUtils.loadAnimation(DetailActivity.this, R.anim.alpha_off));
         titlesContainer.setVisibility(View.INVISIBLE);
-        Utils.hideViewByScaleY(bookInfoLayout);
+        ViewUtils.hideViewByScaleY(bookInfoLayout);
 
         hideTitleAnimator.setListener(new Animator.AnimatorListener() {
             @Override
@@ -220,7 +220,7 @@ public class DetailActivity extends BaseActivity {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                ViewPropertyAnimator hideFabAnimator = Utils.hideViewByScaleY(mainContainer);
+                ViewPropertyAnimator hideFabAnimator = ViewUtils.hideViewByScaleY(mainContainer);
                 hideFabAnimator.setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
