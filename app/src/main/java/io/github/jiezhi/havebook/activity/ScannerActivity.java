@@ -3,12 +3,15 @@ package io.github.jiezhi.havebook.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.jiezhi.havebook.R;
 import me.dm7.barcodescanner.zbar.BarcodeFormat;
 import me.dm7.barcodescanner.zbar.Result;
 import me.dm7.barcodescanner.zbar.ZBarScannerView;
@@ -20,21 +23,21 @@ import me.dm7.barcodescanner.zbar.ZBarScannerView;
 public class ScannerActivity extends BaseActivity implements ZBarScannerView.ResultHandler {
     private static final String TAG = "ScannerActivity";
 
-    //    private ZXingScannerView scannerView;
     private ZBarScannerView scannerView;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        scannerView = new ZXingScannerView(this);
-        scannerView = new ZBarScannerView(this);
-//        List<BarcodeFormat> formats = new ArrayList<>();
-//        formats.add(BarcodeFormat.ISBN13);
-////        formats.add(BarcodeFormat.ISBN10);
-//        scannerView.setFormats(formats);
-        setContentView(scannerView);
+        setContentView(R.layout.scan_layout);
 
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        scannerView = (ZBarScannerView) findViewById(R.id.scanner_view);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
 
@@ -43,15 +46,12 @@ public class ScannerActivity extends BaseActivity implements ZBarScannerView.Res
         super.onResume();
         scannerView.setResultHandler(this);
         List<BarcodeFormat> formats = new ArrayList<>();
-        formats.add(BarcodeFormat.ISBN13);
-        formats.add(BarcodeFormat.ISBN10);
-//        scannerView.setFormats(formats);
         formats = (List<BarcodeFormat>) scannerView.getFormats();
-        for (BarcodeFormat format : formats
-                ) {
-            Log.e(TAG, "support: " + format.getName());
-        }
-        formats.remove(formats.indexOf(BarcodeFormat.ISBN10));
+        // remove isbn10 format, cause when scan a regular book with isbn13
+        // it only show 10 format code.
+        int index = formats.indexOf(BarcodeFormat.ISBN10);
+        if (index > 0)
+            formats.remove(index);
         scannerView.setFormats(formats);
         scannerView.startCamera();
     }
@@ -76,8 +76,6 @@ public class ScannerActivity extends BaseActivity implements ZBarScannerView.Res
         if (scanStr.length() != 13) {
             scannerView.resumeCameraPreview(this);
         } else {
-
-            // If you would like to resume scanning, call this method below:
             Intent bookDetailIntent = new Intent(ScannerActivity.this, SimpleBookActivity.class);
             bookDetailIntent.putExtra("isbn", scanStr);
             startActivity(bookDetailIntent);

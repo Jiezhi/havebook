@@ -38,6 +38,9 @@ public class SimpleBookActivity extends BaseActivity {
     private TextView bookRating;
     private TextView bookPublisher;
     private TextView bookSummary;
+    private TextView bookCatalogTitle;
+    private TextView bookCatalog;
+
     private AppBarLayout appbarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
@@ -72,6 +75,8 @@ public class SimpleBookActivity extends BaseActivity {
         bookRating = (TextView) findViewById(R.id.book_rating);
         bookPublisher = (TextView) findViewById(R.id.book_publisher);
         bookSummary = (TextView) findViewById(R.id.book_summary);
+        bookCatalogTitle = (TextView) findViewById(R.id.book_catalog_title);
+        bookCatalog = (TextView) findViewById(R.id.book_catalog);
 
         appbarLayout = (AppBarLayout) findViewById(R.id.appbar);
     }
@@ -109,6 +114,7 @@ public class SimpleBookActivity extends BaseActivity {
         bookPublisher.setText(doubanBook.getPublisher());
         bookSummary.setText(doubanBook.getSummary());
         collapsingToolbarLayout.setTitle(doubanBook.getTitle());
+        bookCatalog.setText(doubanBook.getCatalog());
 
         ImageRequest imageRequest = new ImageRequest(doubanBook.getImages().get("large"),
                 new Response.Listener<Bitmap>() {

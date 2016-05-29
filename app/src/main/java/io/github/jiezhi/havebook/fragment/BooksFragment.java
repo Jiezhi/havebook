@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -37,6 +38,7 @@ import io.github.jiezhi.havebook.activity.DetailActivity;
 import io.github.jiezhi.havebook.adapter.BookAdapter;
 import io.github.jiezhi.havebook.app.MySingleton;
 import io.github.jiezhi.havebook.model.DoubanBook;
+import io.github.jiezhi.havebook.utils.Constants;
 import io.github.jiezhi.havebook.utils.JsonUtils;
 
 /**
@@ -103,7 +105,8 @@ public class BooksFragment extends Fragment {
 
 
     private void searchBooks() {
-        String searchurl = "http://api.douban.com/v2/book/search?q=" + keyWord;
+        String searchurl = Constants.DOPUBAN_BOOK_SEARCH_API + Uri.encode(keyWord);
+        Log.d(TAG, searchurl);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, searchurl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -152,21 +155,21 @@ public class BooksFragment extends Fragment {
                 return;
 //                throw new IllegalStateException("no reference of toolbar");
             // scrolling up
-            if (dy > 10) {
-                if (!flag) {
-                    showToolbar();
-                    flag = true;
-                }
-            }
-            // scrolling down
-            else if (dy < -10) {
-                if (flag) {
-                    hideToolBar();
-                    flag = false;
-                }
-            }
-
-            lastDy = dy;
+//            if (dy > 50) {
+//                if (!flag) {
+//                    hideToolBar();
+//                    flag = true;
+//                }
+//            }
+//            // scrolling down
+//            else if (dy < -50) {
+//                if (flag) {
+//                    showToolbar();
+//                    flag = false;
+//                }
+//            }
+//
+//            lastDy = dy;
         }
     };
 
@@ -191,10 +194,12 @@ public class BooksFragment extends Fragment {
     };
 
     private void hideToolBar() {
+        toolbar.setVisibility(View.GONE);
         toolbar.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.translate_up_on));
     }
 
     private void showToolbar() {
+        toolbar.setVisibility(View.VISIBLE);
         toolbar.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.translate_up_off));
     }
 
