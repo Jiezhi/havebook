@@ -58,9 +58,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_scan) {
+        if (id == R.id.action_scan) {
             startActivity(new Intent(BaseActivity.this, ScannerActivity.class));
         }
 

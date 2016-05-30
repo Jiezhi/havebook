@@ -36,7 +36,7 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.book_info);
 
-        startActivity(new Intent(MainActivity.this, SimpleBookActivity.class));
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

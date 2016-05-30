@@ -5,6 +5,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name=".app.MyApplication"
         android:allowBackup="true"
@@ -15,6 +20,7 @@
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".activity.SearchActivity" />
+
         <provider
             android:name=".provider.MySuggestionProvider"
             android:authorities="io.github.jiezhi.MySuggestionProvider" />
@@ -35,21 +41,46 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".activity.DetailActivity" />
-
         <activity
             android:name=".activity.ScannerActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".activity.MainActivity" />
-
         <activity
             android:name=".activity.SimpleBookActivity"
             android:parentActivityName=".activity.MainActivity" />
 
+        <!-- <meta-data android:name="UMENT_CHANNEL" -->
+        <!-- android:value="${UMENG_CHANNEL_VALUE}" /> -->
+
+        <activity
+            android:name=".activity.LoginActivity"
+            android:label="@string/title_activity_login" />
+
+        <service android:name="com.amap.api.location.APSService" />
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="key"/>
     </application>
 
+    <!-- Below permissions are required by amap-->
+    <!--用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--用于访问GPS定位-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!--获取运营商信息，用于支持提供运营商信息相关的接口-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--用于访问wifi网络信息，wifi信息会用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!--用于访问网络，网络定位需要上网-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--用于读取手机当前的状态-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--写入扩展存储，向扩展卡写入数据，用于写入缓存定位数据-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>

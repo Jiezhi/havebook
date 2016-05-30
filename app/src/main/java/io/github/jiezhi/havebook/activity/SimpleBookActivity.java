@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,6 +45,7 @@ public class SimpleBookActivity extends BaseActivity {
 
     private AppBarLayout appbarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class SimpleBookActivity extends BaseActivity {
         if (isbn == null) isbn = "9787115416292";
         Log.d(TAG, "isbn: " + isbn);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -64,6 +66,7 @@ public class SimpleBookActivity extends BaseActivity {
 
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(isbn);
+//        collapsingToolbarLayout.setContentScrim(getDrawable(R.drawable.heart_b));
 
         initView();
         getBookInfoByISBN(isbn);
@@ -80,6 +83,18 @@ public class SimpleBookActivity extends BaseActivity {
 
         summaryExpandableTextView = (ExpandableTextView) findViewById(R.id.summary_text);
         catalogExpandableTextView = (ExpandableTextView) findViewById(R.id.catalog_text);
+
+        appbarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                // judge whether collapsingtoolbar scroll to top
+                int delta = collapsingToolbarLayout.getHeight() + verticalOffset - toolbar.getHeight();
+                Log.d(TAG, "delta" + delta);
+                if (delta <= 100) {
+                    Log.d(TAG, "Got place");
+                }
+            }
+        });
     }
 
     private void getBookInfoByISBN(String isbn) {
@@ -140,6 +155,12 @@ public class SimpleBookActivity extends BaseActivity {
             public void onGenerated(Palette palette) {
                 Palette.Swatch swatch = palette.getVibrantSwatch();
                 appbarLayout.setBackgroundColor(swatch.getRgb());
+                bookTitle.setTextColor(swatch.getTitleTextColor());
+
+                Window window = getWindow();
+                window.setStatusBarColor(swatch.getRgb());
+                window.setNavigationBarColor(swatch.getRgb());
+//                toolbar.setBackgroundColor(swatch.getRgb());
             }
         });
     }
