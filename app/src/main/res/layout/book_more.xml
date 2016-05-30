@@ -11,7 +11,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -21,11 +21,14 @@
                 android:text="Summary"
                 android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/book_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lorem" />
+            <!--<TextView-->
+            <!--android:id="@+id/book_summary"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/lorem" />-->
+
+            <include layout="@layout/expandable_textview"
+                android:id="@+id/summary_text"/>
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
@@ -36,7 +39,7 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,14 +51,18 @@
                 android:id="@+id/book_catalog_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="Catalog" />
+                android:text="Catalog"
+                android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/book_catalog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lorem" />
+            <!--<TextView-->
+            <!--android:id="@+id/book_catalog"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/lorem" />-->
+
+            <include
+                android:id="@+id/catalog_text"
+                layout="@layout/expandable_textview" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

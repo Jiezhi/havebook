@@ -4,11 +4,13 @@
 >
 > 书一多就比较混乱，所以索性尝试做个程序将数据整合起来。
 
-##演示
+##演示(Gif 有点大，可能无法正确加载)
 ![](http://7xlub0.com1.z0.glb.clouddn.com/image/gif/May-26-2016%2013-27-19-s.gif)
+或者点击 http://7xlub0.com1.z0.glb.clouddn.com/image/gif/May-26-2016%2013-27-19-s.gif
 
-## 参考：
+## Tanks to：
 
 * [OpenLibra-Material](https://github.com/saulmm/OpenLibra-Material)
 * [barcodescanner](https://github.com/dm77/barcodescanner)
+* [ExpandableTextView](https://github.com/Manabu-GT/ExpandableTextView)
 

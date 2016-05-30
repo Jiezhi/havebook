@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import org.json.JSONObject;
 
@@ -37,9 +38,9 @@ public class SimpleBookActivity extends BaseActivity {
     private TextView bookAuthor;
     private TextView bookRating;
     private TextView bookPublisher;
-    private TextView bookSummary;
     private TextView bookCatalogTitle;
-    private TextView bookCatalog;
+    private ExpandableTextView summaryExpandableTextView;
+    private ExpandableTextView catalogExpandableTextView;
 
     private AppBarLayout appbarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -74,11 +75,11 @@ public class SimpleBookActivity extends BaseActivity {
         bookAuthor = (TextView) findViewById(R.id.book_author);
         bookRating = (TextView) findViewById(R.id.book_rating);
         bookPublisher = (TextView) findViewById(R.id.book_publisher);
-        bookSummary = (TextView) findViewById(R.id.book_summary);
         bookCatalogTitle = (TextView) findViewById(R.id.book_catalog_title);
-        bookCatalog = (TextView) findViewById(R.id.book_catalog);
-
         appbarLayout = (AppBarLayout) findViewById(R.id.appbar);
+
+        summaryExpandableTextView = (ExpandableTextView) findViewById(R.id.summary_text);
+        catalogExpandableTextView = (ExpandableTextView) findViewById(R.id.catalog_text);
     }
 
     private void getBookInfoByISBN(String isbn) {
@@ -101,7 +102,7 @@ public class SimpleBookActivity extends BaseActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-
+                        Log.e(TAG, "getbook error");
                     }
                 });
 
@@ -112,9 +113,9 @@ public class SimpleBookActivity extends BaseActivity {
     private void loadBookData(DoubanBook doubanBook) {
         bookTitle.setText(doubanBook.getTitle());
         bookPublisher.setText(doubanBook.getPublisher());
-        bookSummary.setText(doubanBook.getSummary());
+        summaryExpandableTextView.setText(doubanBook.getSummary());
         collapsingToolbarLayout.setTitle(doubanBook.getTitle());
-        bookCatalog.setText(doubanBook.getCatalog());
+        catalogExpandableTextView.setText(doubanBook.getCatalog());
 
         ImageRequest imageRequest = new ImageRequest(doubanBook.getImages().get("large"),
                 new Response.Listener<Bitmap>() {
@@ -139,8 +140,6 @@ public class SimpleBookActivity extends BaseActivity {
             public void onGenerated(Palette palette) {
                 Palette.Swatch swatch = palette.getVibrantSwatch();
                 appbarLayout.setBackgroundColor(swatch.getRgb());
-//                bookSummary.setTextColor(swatch.getBodyTextColor());
-//                bookTitle.setTextColor(swatch.getTitleTextColor());
             }
         });
     }
