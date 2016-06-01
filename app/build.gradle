@@ -17,6 +17,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+//    productFlavors {
+//        xiaomi {}
+//        _360 {}
+//        baidu {}
+//        wandoujia {}
+//    }
+//
+//    productFlavors.all {
+//        flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+//    }
 }
 
 dependencies {
@@ -29,4 +40,5 @@ dependencies {
     compile 'me.dm7.barcodescanner:zbar:1.8.4'
     compile 'com.ms-square:expandableTextView:0.1.4'
     compile files('libs/volley.jar')
+    compile files('libs/AMap_Location_V2.5.0_20160526.jar')
 }

@@ -42,10 +42,15 @@
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout
-            android:background="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@android:color/transparent"
             android:orientation="vertical">
+
+            <io.github.jiezhi.havebook.views.FlowLayout
+                android:id="@+id/tag_flow_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -57,9 +62,5 @@
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
-
-    <!--<include layout="@layout/book_middle" />-->
-
-    <!--<include layout="@layout/book_more"/>-->
 
 </android.support.design.widget.CoordinatorLayout>

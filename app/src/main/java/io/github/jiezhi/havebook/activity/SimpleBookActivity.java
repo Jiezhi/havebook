@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,10 +23,13 @@ import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.model.DoubanBook;
 import io.github.jiezhi.havebook.utils.Constants;
 import io.github.jiezhi.havebook.utils.JsonUtils;
+import io.github.jiezhi.havebook.views.FlowLayout;
 
 /**
  * Created by jiezhi on 5/26/16.
@@ -40,6 +44,7 @@ public class SimpleBookActivity extends BaseActivity {
     private TextView bookRating;
     private TextView bookPublisher;
     private TextView bookCatalogTitle;
+    private FlowLayout tagFlowLayout;
     private ExpandableTextView summaryExpandableTextView;
     private ExpandableTextView catalogExpandableTextView;
 
@@ -84,14 +89,16 @@ public class SimpleBookActivity extends BaseActivity {
         summaryExpandableTextView = (ExpandableTextView) findViewById(R.id.summary_text);
         catalogExpandableTextView = (ExpandableTextView) findViewById(R.id.catalog_text);
 
+        tagFlowLayout = (FlowLayout) findViewById(R.id.tag_flow_layout);
+
         appbarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 // judge whether collapsingtoolbar scroll to top
                 int delta = collapsingToolbarLayout.getHeight() + verticalOffset - toolbar.getHeight();
-                Log.d(TAG, "delta" + delta);
+//                Log.d(TAG, "delta" + delta);
                 if (delta <= 100) {
-                    Log.d(TAG, "Got place");
+//                    Log.d(TAG, "Got place");
                 }
             }
         });
@@ -117,7 +124,7 @@ public class SimpleBookActivity extends BaseActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        Log.e(TAG, "getbook error");
+                        Log.e(TAG, "get book error");
                     }
                 });
 
@@ -131,6 +138,14 @@ public class SimpleBookActivity extends BaseActivity {
         summaryExpandableTextView.setText(doubanBook.getSummary());
         collapsingToolbarLayout.setTitle(doubanBook.getTitle());
         catalogExpandableTextView.setText(doubanBook.getCatalog());
+
+        TextView tagTV;
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (Map<String, String> tagMap : doubanBook.getTags()) {
+            tagTV = (TextView) inflater.inflate(R.layout.tag_textview, tagFlowLayout, false);
+            tagTV.setText(tagMap.get("name"));
+            tagFlowLayout.addView(tagTV);
+        }
 
         ImageRequest imageRequest = new ImageRequest(doubanBook.getImages().get("large"),
                 new Response.Listener<Bitmap>() {
@@ -160,6 +175,7 @@ public class SimpleBookActivity extends BaseActivity {
                 Window window = getWindow();
                 window.setStatusBarColor(swatch.getRgb());
                 window.setNavigationBarColor(swatch.getRgb());
+                tagFlowLayout.setBackgroundColor(swatch.getBodyTextColor());
 //                toolbar.setBackgroundColor(swatch.getRgb());
             }
         });
