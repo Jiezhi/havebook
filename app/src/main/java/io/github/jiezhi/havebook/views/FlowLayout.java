@@ -2,7 +2,6 @@ package io.github.jiezhi.havebook.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -74,8 +73,6 @@ public class FlowLayout extends ViewGroup {
             }
         }
 
-        Log.d(TAG, "sizeWidth:" + sizeWidth);
-        Log.d(TAG, "sizeHeight:" + sizeHeight);
         setMeasuredDimension(modeWidth == MeasureSpec.EXACTLY ? sizeWidth : width + getPaddingLeft() + getPaddingRight(),
                 modeHeight == MeasureSpec.EXACTLY ? sizeHeight : height + getPaddingTop() + getPaddingBottom());
     }
