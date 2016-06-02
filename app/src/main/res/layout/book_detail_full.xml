@@ -70,7 +70,7 @@
             android:layout_marginTop="-26dp"
             android:background="@drawable/ripple_round"
             android:elevation="4dp"
-            android:src="@drawable/heart"
+            android:src="@drawable/ic_menu_heart_like"
             android:transitionName="fab" />
 
         <FrameLayout

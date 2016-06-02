@@ -250,4 +250,13 @@ public class DoubanBook implements Serializable {
                 ", translator=" + Arrays.toString(translator) +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        // We assume that two books are same if both has the same id
+        return o instanceof DoubanBook && this.getId().equals(((DoubanBook) o).getId());
+//        if (o instanceof DoubanBook)
+//            return this.getId().equals(((DoubanBook) o).getId());
+//        return false;
+    }
 }

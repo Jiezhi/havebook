@@ -39,6 +39,4 @@ dependencies {
     compile 'com.android.support:palette-v7:23.4.0'
     compile 'me.dm7.barcodescanner:zbar:1.8.4'
     compile 'com.ms-square:expandableTextView:0.1.4'
-    compile files('libs/volley.jar')
-    compile files('libs/AMap_Location_V2.5.0_20160526.jar')
 }

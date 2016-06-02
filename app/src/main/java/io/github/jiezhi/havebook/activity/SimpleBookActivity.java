@@ -1,15 +1,21 @@
 package io.github.jiezhi.havebook.activity;
 
+import android.content.res.ColorStateList;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +32,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 import io.github.jiezhi.havebook.R;
+import io.github.jiezhi.havebook.db.MySQLiteHelper;
 import io.github.jiezhi.havebook.model.DoubanBook;
 import io.github.jiezhi.havebook.utils.Constants;
 import io.github.jiezhi.havebook.utils.JsonUtils;
@@ -47,10 +54,18 @@ public class SimpleBookActivity extends BaseActivity {
     private FlowLayout tagFlowLayout;
     private ExpandableTextView summaryExpandableTextView;
     private ExpandableTextView catalogExpandableTextView;
+    private FloatingActionButton faButton;
 
     private AppBarLayout appbarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
+
+    private boolean isLiked = false;
+
+    private MySQLiteHelper sqliteHelper;
+    private SQLiteDatabase db;
+
+    private DoubanBook doubanBook = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,6 +105,31 @@ public class SimpleBookActivity extends BaseActivity {
         catalogExpandableTextView = (ExpandableTextView) findViewById(R.id.catalog_text);
 
         tagFlowLayout = (FlowLayout) findViewById(R.id.tag_flow_layout);
+        faButton = (FloatingActionButton) findViewById(R.id.fab);
+
+        // Switch of book collection
+        faButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message msg = new Message();
+                if (isLiked) { // Cancel collect the book
+                    isLiked = false;
+                    msg.arg1 = DEL_LIKED_BOOK;
+                    Snackbar.make(v, "Book deleted from your collect", Snackbar.LENGTH_SHORT).show();
+                    faButton.setImageDrawable(getDrawable(R.drawable.ic_menu_heart_like));
+                } else { // add the book to collect
+                    isLiked = true;
+                    msg.arg1 = ADD_LIKED_BOOK;
+                    Snackbar.make(v, "Book added from your collect", Snackbar.LENGTH_SHORT).show();
+                    faButton.setImageDrawable(getDrawable(R.drawable.ic_menu_heart_liked));
+                }
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(BOOK_RELATED, doubanBook);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+        });
 
         appbarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -116,7 +156,7 @@ public class SimpleBookActivity extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject object) {
 //                        Log.d(TAG, object.toString());
-                        DoubanBook doubanBook = JsonUtils.parseBook(object);
+                        doubanBook = JsonUtils.parseBook(object);
 
                         loadBookData(doubanBook);
                     }
@@ -162,6 +202,9 @@ public class SimpleBookActivity extends BaseActivity {
                     }
                 });
         requestQueue.add(imageRequest);
+
+        // make the button clickable after data loaded
+        faButton.setVisibility(View.VISIBLE);
     }
 
     private void setPalette(Bitmap bitmap) {
@@ -176,6 +219,8 @@ public class SimpleBookActivity extends BaseActivity {
                 window.setStatusBarColor(swatch.getRgb());
                 window.setNavigationBarColor(swatch.getRgb());
                 tagFlowLayout.setBackgroundColor(swatch.getBodyTextColor());
+//                toolbar.setBackgroundColor(swatch.getRgb());
+                faButton.setBackgroundTintList(ColorStateList.valueOf(swatch.getRgb()));
 //                toolbar.setBackgroundColor(swatch.getRgb());
             }
         });

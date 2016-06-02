@@ -1,9 +1,12 @@
 package io.github.jiezhi.havebook.activity;
 
 import android.app.SearchManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -14,6 +17,9 @@ import com.android.volley.RequestQueue;
 
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.app.MySingleton;
+import io.github.jiezhi.havebook.db.MySQLiteHelper;
+import io.github.jiezhi.havebook.model.DoubanBook;
+import io.github.jiezhi.havebook.utils.Constants;
 
 /**
  * Created by jiezhi on 5/24/16.
@@ -22,10 +28,71 @@ import io.github.jiezhi.havebook.app.MySingleton;
 public abstract class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     protected RequestQueue requestQueue;
+    private Context context;
+    private MySQLiteHelper sqLiteHelper;
+
+    protected static final String BOOK_RELATED = "bookRelated";
+    protected static final int ADD_LIKED_BOOK = 1;
+    protected static final int DEL_LIKED_BOOK = ADD_LIKED_BOOK << 1;
+
+    protected Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            DoubanBook book;
+            switch (msg.arg1) {
+                case ADD_LIKED_BOOK:
+                    book = (DoubanBook) msg.getData().getSerializable(BOOK_RELATED);
+                    ContentValues cv = getContentValuesFromBook(book);
+                    sqLiteHelper = new MySQLiteHelper(context);
+                    sqLiteHelper.insert(cv);
+                    break;
+                case DEL_LIKED_BOOK:
+                    book = (DoubanBook) msg.getData().getSerializable(BOOK_RELATED);
+                    sqLiteHelper.delete(book.getId());
+                    break;
+            }
+            return true;
+        }
+    });
+
+    private ContentValues getContentValuesFromBook(DoubanBook book) {
+        ContentValues cv = new ContentValues();
+        cv.put(Constants.Book.ID, book.getId());
+        cv.put(Constants.Book.AUTHOR_INTRO, book.getAuthor_intro());
+        cv.put(Constants.Book.BINDING, book.getBinding());
+        cv.put(Constants.Book.CATALOG, book.getCatalog());
+        cv.put(Constants.Book.IMAGE, book.getImage());
+        cv.put(Constants.Book.LARGE_IMG, book.getImages().get("large"));
+        cv.put(Constants.Book.MEDIUM_IMG, book.getImages().get("medium"));
+        cv.put(Constants.Book.SMALL_IMG, book.getImages().get("small"));
+        cv.put(Constants.Book.ISBN10, book.getIsbn10());
+        cv.put(Constants.Book.ISBN13, book.getIsbn13());
+        cv.put(Constants.Book.ORIGIN_TITLE, book.getOrigin_title());
+        cv.put(Constants.Book.PAGES, book.getPages());
+        cv.put(Constants.Book.PRICE, book.getPrice());
+        cv.put(Constants.Book.PUBDATE, book.getPubdate());
+        cv.put(Constants.Book.PUBLISHER, book.getPublisher());
+        cv.put(Constants.Book.SUBTITLE, book.getSubtitle());
+        cv.put(Constants.Book.TITLE, book.getTitle());
+        cv.put(Constants.Book.URL, book.getUrl());
+        cv.put(Constants.Book.ALT, book.getAlt());
+        cv.put(Constants.Book.ALT_TITLE, book.getAlt_title());
+        // FIXME: 6/2/16
+//        cv.put(Constants.Book.AUTHOR, book.getAuthors());
+//        cv.put(Constants.Book.TRANSLATOR, book.getTranslator());
+//        cv.put(Constants.Book.RATING_AVERAGE, book.getRating());
+//        cv.put(Constants.Book.RATING_MAX, book.getAuthor_intro());
+//        cv.put(Constants.Book.RATING_MIN, book.getRating());
+//        cv.put(Constants.Book.RATING_NUMRATERS, book.getRating());
+//        cv.put(Constants.Book.TAGS, book.getTags());
+        return cv;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        context = this;
 
         requestQueue = MySingleton.getInstance(this).getRequestQueue();
 
@@ -36,8 +103,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-//        MenuItem searchItem = menu.findItem(R.id.action_search);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 //        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
