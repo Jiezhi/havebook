@@ -151,7 +151,7 @@ public class SimpleBookActivity extends BaseActivity {
             return;
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Constants.DOUBAN_BOOK_ISBN_API + isbn, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Constants.DoubanApi.DOUBAN_BOOK_ISBN_API + isbn, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject object) {
@@ -187,7 +187,7 @@ public class SimpleBookActivity extends BaseActivity {
             tagFlowLayout.addView(tagTV);
         }
 
-        ImageRequest imageRequest = new ImageRequest(doubanBook.getImages().get("large"),
+        ImageRequest imageRequest = new ImageRequest(doubanBook.getImg_large(),
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap bitmap) {

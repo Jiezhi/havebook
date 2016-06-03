@@ -63,20 +63,16 @@ public class JsonUtils {
 
             // for images map
             detailObject = object.getJSONObject("images");
-            bookInfoMap = new HashMap<>();
-            bookInfoMap.put("large", detailObject.getString("large"));
-            bookInfoMap.put("medium", detailObject.getString("medium"));
-            bookInfoMap.put("small", detailObject.getString("small"));
-            doubanBook.setImages(bookInfoMap);
+            doubanBook.setImg_large(detailObject.getString("large"));
+            doubanBook.setImg_medium(detailObject.getString("medium"));
+            doubanBook.setImg_small(detailObject.getString("small"));
 
             // for rating map
             detailObject = object.getJSONObject("rating");
-            bookInfoMap = new HashMap<>();
-            bookInfoMap.put("average", detailObject.getString("average"));
-            bookInfoMap.put("max", detailObject.getString("max"));
-            bookInfoMap.put("min", detailObject.getString("min"));
-            bookInfoMap.put("numRaters", detailObject.getString("numRaters"));
-            doubanBook.setRating(bookInfoMap);
+            doubanBook.setRatingAverage(detailObject.getString("average"));
+            doubanBook.setRatingMax(detailObject.getString("max"));
+            doubanBook.setRatingMin(detailObject.getString("min"));
+            doubanBook.setRatingNum(detailObject.getInt("numRaters"));
 
             // for tags map
             JSONArray tagArray = object.getJSONArray("tags");

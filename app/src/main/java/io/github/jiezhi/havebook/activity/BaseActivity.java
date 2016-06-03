@@ -34,6 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected static final String BOOK_RELATED = "bookRelated";
     protected static final int ADD_LIKED_BOOK = 1;
     protected static final int DEL_LIKED_BOOK = ADD_LIKED_BOOK << 1;
+    protected static final int QUERY_LIKED_BOOK = DEL_LIKED_BOOK << 1;
 
     protected Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -43,6 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 case ADD_LIKED_BOOK:
                     book = (DoubanBook) msg.getData().getSerializable(BOOK_RELATED);
                     ContentValues cv = getContentValuesFromBook(book);
+                    // TODO: 6/3/16 Change sqlitehelper to singleton
                     sqLiteHelper = new MySQLiteHelper(context);
                     sqLiteHelper.insert(cv);
                     break;
@@ -50,7 +52,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                     book = (DoubanBook) msg.getData().getSerializable(BOOK_RELATED);
                     sqLiteHelper.delete(book.getId());
                     break;
+                case QUERY_LIKED_BOOK:
+
+                    break;
             }
+            if (sqLiteHelper != null) sqLiteHelper.close();
             return true;
         }
     });
@@ -62,9 +68,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         cv.put(Constants.Book.BINDING, book.getBinding());
         cv.put(Constants.Book.CATALOG, book.getCatalog());
         cv.put(Constants.Book.IMAGE, book.getImage());
-        cv.put(Constants.Book.LARGE_IMG, book.getImages().get("large"));
-        cv.put(Constants.Book.MEDIUM_IMG, book.getImages().get("medium"));
-        cv.put(Constants.Book.SMALL_IMG, book.getImages().get("small"));
+        cv.put(Constants.Book.LARGE_IMG, book.getImg_large());
+        cv.put(Constants.Book.MEDIUM_IMG, book.getImg_medium());
+        cv.put(Constants.Book.SMALL_IMG, book.getImg_small());
         cv.put(Constants.Book.ISBN10, book.getIsbn10());
         cv.put(Constants.Book.ISBN13, book.getIsbn13());
         cv.put(Constants.Book.ORIGIN_TITLE, book.getOrigin_title());
@@ -80,11 +86,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         // FIXME: 6/2/16
 //        cv.put(Constants.Book.AUTHOR, book.getAuthors());
 //        cv.put(Constants.Book.TRANSLATOR, book.getTranslator());
-//        cv.put(Constants.Book.RATING_AVERAGE, book.getRating());
-//        cv.put(Constants.Book.RATING_MAX, book.getAuthor_intro());
-//        cv.put(Constants.Book.RATING_MIN, book.getRating());
-//        cv.put(Constants.Book.RATING_NUMRATERS, book.getRating());
 //        cv.put(Constants.Book.TAGS, book.getTags());
+        cv.put(Constants.Book.RATING_AVERAGE, book.getRatingAverage());
+        cv.put(Constants.Book.RATING_MAX, book.getRatingMax());
+        cv.put(Constants.Book.RATING_MIN, book.getRatingMin());
+        cv.put(Constants.Book.RATING_NUMRATERS, book.getRatingNum());
         return cv;
     }
 

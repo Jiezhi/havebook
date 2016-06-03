@@ -1,9 +1,13 @@
 package io.github.jiezhi.havebook.model;
 
+import android.database.Cursor;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import io.github.jiezhi.havebook.utils.Constants;
 
 /**
  * Created by jiezhi on 5/25/16.
@@ -20,7 +24,9 @@ public class DoubanBook implements Serializable {
     private String catalog;
     private String id;
     private String image;
-    private Map<String, String> images;
+    private String img_large;
+    private String img_medium;
+    private String img_small;
     private String isbn10;
     private String isbn13;
     private String origin_title;
@@ -28,13 +34,50 @@ public class DoubanBook implements Serializable {
     private String price;
     private String pubdate;
     private String publisher;
-    private Map<String, String> rating;
+    private String ratingAverage;
+    private String ratingMax;
+    private String ratingMin;
+    private int ratingNum;
     private String subtitle;
     private String summary;
     private List<Map<String, String>> tags;
     private String title;
     private String url;
     private String[] translator;
+
+    public DoubanBook() {
+    }
+
+    public DoubanBook(Cursor c) {
+        setId(c.getString(c.getColumnIndex(Constants.Book.ID)));
+        setAuthor_intro(c.getString(c.getColumnIndex(Constants.Book.AUTHOR_INTRO)));
+        setBinding(c.getString(c.getColumnIndex(Constants.Book.BINDING)));
+        setCatalog(c.getString(c.getColumnIndex(Constants.Book.CATALOG)));
+        setImage(c.getString(c.getColumnIndex(Constants.Book.IMAGE)));
+        setImg_large(c.getString(c.getColumnIndex(Constants.Book.LARGE_IMG)));
+        setImg_medium(c.getString(c.getColumnIndex(Constants.Book.MEDIUM_IMG)));
+        setImg_small(c.getString(c.getColumnIndex(Constants.Book.SMALL_IMG)));
+        setIsbn10(c.getString(c.getColumnIndex(Constants.Book.ISBN10)));
+        setIsbn13(c.getString(c.getColumnIndex(Constants.Book.ISBN13)));
+        setOrigin_title(c.getString(c.getColumnIndex(Constants.Book.ORIGIN_TITLE)));
+        setPages(c.getString(c.getColumnIndex(Constants.Book.PAGES)));
+        setPrice(c.getString(c.getColumnIndex(Constants.Book.PRICE)));
+        setPubdate(c.getString(c.getColumnIndex(Constants.Book.PUBDATE)));
+        setPublisher(c.getString(c.getColumnIndex(Constants.Book.PUBLISHER)));
+        setSubtitle(c.getString(c.getColumnIndex(Constants.Book.SUBTITLE)));
+        setTitle(c.getString(c.getColumnIndex(Constants.Book.TITLE)));
+        setUrl(c.getString(c.getColumnIndex(Constants.Book.URL)));
+        setAlt(c.getString(c.getColumnIndex(Constants.Book.ALT)));
+        setAlt_title(c.getString(c.getColumnIndex(Constants.Book.ALT_TITLE)));
+        setRatingAverage(c.getString(c.getColumnIndex(Constants.Book.RATING_AVERAGE)));
+        setRatingMax(c.getString(c.getColumnIndex(Constants.Book.RATING_MAX)));
+        setRatingMin(c.getString(c.getColumnIndex(Constants.Book.RATING_MIN)));
+        setRatingNum(c.getInt(c.getColumnIndex(Constants.Book.RATING_NUMRATERS)));
+        // FIXME: 6/3/16
+//        setAuthors(c.getString(c.getColumnIndex(Constants.Book.ID)));
+//        setTranslator(c.getString(c.getColumnIndex(Constants.Book.ID)));
+//        setTags(c.getString(c.getColumnIndex(Constants.Book.ID)));
+    }
 
     public String getAlt() {
         return alt;
@@ -53,6 +96,7 @@ public class DoubanBook implements Serializable {
     }
 
     public String[] getAuthors() {
+        if (authors == null) return new String[]{"null"};
         return authors;
     }
 
@@ -66,6 +110,30 @@ public class DoubanBook implements Serializable {
 
     public void setAuthor_intro(String author_intro) {
         this.author_intro = author_intro;
+    }
+
+    public String getImg_large() {
+        return img_large;
+    }
+
+    public void setImg_large(String img_large) {
+        this.img_large = img_large;
+    }
+
+    public String getImg_medium() {
+        return img_medium;
+    }
+
+    public void setImg_medium(String img_medium) {
+        this.img_medium = img_medium;
+    }
+
+    public String getImg_small() {
+        return img_small;
+    }
+
+    public void setImg_small(String img_small) {
+        this.img_small = img_small;
     }
 
     public String getBinding() {
@@ -173,22 +241,6 @@ public class DoubanBook implements Serializable {
         this.summary = summary;
     }
 
-    public Map<String, String> getImages() {
-        return images;
-    }
-
-    public void setImages(Map<String, String> images) {
-        this.images = images;
-    }
-
-    public Map<String, String> getRating() {
-        return rating;
-    }
-
-    public void setRating(Map<String, String> rating) {
-        this.rating = rating;
-    }
-
     public String[] getTranslator() {
         return translator;
     }
@@ -213,6 +265,37 @@ public class DoubanBook implements Serializable {
         this.url = url;
     }
 
+    public String getRatingAverage() {
+        return ratingAverage;
+    }
+
+    public void setRatingAverage(String ratingAverage) {
+        this.ratingAverage = ratingAverage;
+    }
+
+    public String getRatingMax() {
+        return ratingMax;
+    }
+
+    public void setRatingMax(String ratingMax) {
+        this.ratingMax = ratingMax;
+    }
+
+    public String getRatingMin() {
+        return ratingMin;
+    }
+
+    public void setRatingMin(String ratingMin) {
+        this.ratingMin = ratingMin;
+    }
+
+    public int getRatingNum() {
+        return ratingNum;
+    }
+
+    public void setRatingNum(int ratingNum) {
+        this.ratingNum = ratingNum;
+    }
 
     public List<Map<String, String>> getTags() {
         return tags;
@@ -221,6 +304,7 @@ public class DoubanBook implements Serializable {
     public void setTags(List<Map<String, String>> tags) {
         this.tags = tags;
     }
+
 
     @Override
     public String toString() {
@@ -233,7 +317,9 @@ public class DoubanBook implements Serializable {
                 ", catalog='" + catalog + '\'' +
                 ", id='" + id + '\'' +
                 ", image='" + image + '\'' +
-                ", images=" + images +
+                ", img_large='" + img_large + '\'' +
+                ", img_medium='" + img_medium + '\'' +
+                ", img_small='" + img_small + '\'' +
                 ", isbn10='" + isbn10 + '\'' +
                 ", isbn13='" + isbn13 + '\'' +
                 ", origin_title='" + origin_title + '\'' +
@@ -241,7 +327,10 @@ public class DoubanBook implements Serializable {
                 ", price='" + price + '\'' +
                 ", pubdate='" + pubdate + '\'' +
                 ", publisher='" + publisher + '\'' +
-                ", rating=" + rating +
+                ", ratingAverage='" + ratingAverage + '\'' +
+                ", ratingMax='" + ratingMax + '\'' +
+                ", ratingMin='" + ratingMin + '\'' +
+                ", ratingNum=" + ratingNum +
                 ", subtitle='" + subtitle + '\'' +
                 ", summary='" + summary + '\'' +
                 ", tags=" + tags +

@@ -111,7 +111,7 @@ public class DetailActivity extends BaseActivity {
             sb.append(author).append(" ");
         }
         subtitleTextView.setText(sb.toString());
-        ratingValueTextView.setText(book.getRating().get("average") + "/10"); 
+        ratingValueTextView.setText(book.getRatingAverage() + "/10");
     }
 
     private void setEnterAnimation() {

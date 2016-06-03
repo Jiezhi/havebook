@@ -14,6 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -22,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONObject;
 
 import io.github.jiezhi.havebook.R;
+import io.github.jiezhi.havebook.utils.Constants;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,17 +39,42 @@ public class MainActivity extends BaseActivity
 
 
         setContentView(R.layout.activity_main);
-        textView = (TextView) findViewById(R.id.book_info);
+//        textView = (TextView) findViewById(R.id.book_info);
 
-        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
+//        startActivity(new Intent(MainActivity.this, SimpleBookActivity.class));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 //
         initTool();
+
+//        initMap();
 //
 //        getBookInfo();
+    }
+
+    private void initMap() {
+        AMapLocationClient locationClient = new AMapLocationClient(getApplicationContext());
+        AMapLocationClientOption option = new AMapLocationClientOption();
+        option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        option.setNeedAddress(true);
+        option.setOnceLocation(true);
+        option.setWifiActiveScan(true);
+        option.setMockEnable(true);
+        option.setInterval(2000);
+        locationClient.setLocationOption(option);
+
+        AMapLocationListener listener = new AMapLocationListener() {
+            @Override
+            public void onLocationChanged(AMapLocation aMapLocation) {
+                Log.d(TAG, "onlocation cahanged:" + aMapLocation.toString());
+            }
+        };
+
+        locationClient.setLocationListener(listener);
+        locationClient.startLocation();
     }
 
     private void getBookInfo() {
@@ -112,8 +142,6 @@ public class MainActivity extends BaseActivity
     }
 
 
-
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -131,6 +159,10 @@ public class MainActivity extends BaseActivity
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.nav_collect) {
+            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+            intent.setAction(Constants.Action.SHOW_COLLECT);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

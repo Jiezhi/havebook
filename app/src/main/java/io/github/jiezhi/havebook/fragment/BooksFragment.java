@@ -54,7 +54,6 @@ public class BooksFragment extends Fragment {
     private List<DoubanBook> doubanBooks;
     private RecyclerView bookRecycler;
     private Toolbar toolbar;
-    private String keyWord = "android";
 
     private RequestQueue requestQueue;
 
@@ -63,6 +62,9 @@ public class BooksFragment extends Fragment {
         Log.d(TAG, "toolbar:" + toolbar);
     }
 
+    public void setDoubanBooks(List<DoubanBook> doubanBooks){
+        this.doubanBooks = doubanBooks;
+    }
 
 
     @Nullable
@@ -70,7 +72,6 @@ public class BooksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         requestQueue = MySingleton.getInstance(getActivity()).getRequestQueue();
-        keyWord = getArguments().getString("keyword");
         View rootView = inflater.inflate(R.layout.fragment_books, container, false);
 
         // Configure recyclerview
@@ -92,20 +93,28 @@ public class BooksFragment extends Fragment {
         loadingDialog.setMessage("Loading books...");
         loadingDialog.show();
 
-        // TODO: get books data
         getBooksInfo();
 
         return rootView;
     }
 
     private void getBooksInfo() {
-        searchBooks();
-        Log.d(TAG, "searching books");
+        String action = getArguments().getString(Constants.Action.ACTION);
+        if (Constants.Action.SHOW_SEARCH.equals(action)) {
+            Log.d(TAG, "searching books");
+            String keyWord = getArguments().getString("keyword");
+            searchBooks(keyWord);
+        } else if (Constants.Action.SHOW_COLLECT.equals(action)) {
+            BookAdapter adapter = new BookAdapter(doubanBooks);
+            adapter.setOnBookClickedListener(onBookClickedListener);
+            bookRecycler.setAdapter(adapter);
+            loadingDialog.dismiss();
+        }
     }
 
 
-    private void searchBooks() {
-        String searchurl = Constants.DOPUBAN_BOOK_SEARCH_API + Uri.encode(keyWord);
+    private void searchBooks(String keyWord) {
+        String searchurl = Constants.DoubanApi.DOUBAN_BOOK_SEARCH_API + Uri.encode(keyWord);
         Log.d(TAG, searchurl);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, searchurl, null,
                 new Response.Listener<JSONObject>() {

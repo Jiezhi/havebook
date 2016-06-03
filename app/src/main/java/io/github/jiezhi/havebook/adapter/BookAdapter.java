@@ -77,7 +77,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         holder.bookCover.setDrawingCacheEnabled(true);
 //        bitmap = holder.bookCover.getDrawingCache();
 
-        ImageRequest imageRequest = new ImageRequest(currentDoubanBook.getImages().get("large"),
+        ImageRequest imageRequest = new ImageRequest(currentDoubanBook.getImg_large(),
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap bitmap) {

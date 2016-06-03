@@ -68,12 +68,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     public void insert(ContentValues values) {
-        SQLiteDatabase db = getWritableDatabase();
+        if (db == null) db = getWritableDatabase();
         db.insert(TABLE_LIKED_BOOK, null, values);
     }
 
     public Cursor query() {
-        SQLiteDatabase db = getWritableDatabase();
+        if (db == null) db = getWritableDatabase();
         return db.query(TABLE_LIKED_BOOK, null, null, null, null, null, null);
     }
 
