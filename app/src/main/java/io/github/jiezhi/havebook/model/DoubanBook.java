@@ -3,7 +3,9 @@ package io.github.jiezhi.havebook.model;
 import android.database.Cursor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,9 +75,31 @@ public class DoubanBook implements Serializable {
         setRatingMax(c.getString(c.getColumnIndex(Constants.Book.RATING_MAX)));
         setRatingMin(c.getString(c.getColumnIndex(Constants.Book.RATING_MIN)));
         setRatingNum(c.getInt(c.getColumnIndex(Constants.Book.RATING_NUMRATERS)));
-        // FIXME: 6/3/16
-//        setAuthors(c.getString(c.getColumnIndex(Constants.Book.ID)));
-//        setTranslator(c.getString(c.getColumnIndex(Constants.Book.ID)));
+        String tmp = c.getString(c.getColumnIndex(Constants.Book.AUTHOR));
+        if (tmp != null && !tmp.equals("")) {
+            String[] authors = tmp.split(Constants.Others.SEPERATE);
+            setAuthors(authors);
+        }
+
+        tmp = c.getString(c.getColumnIndex(Constants.Book.TRANSLATOR));
+        if (tmp != null && tmp.equals("")) {
+            String[] translators = tmp.split(Constants.Others.SEPERATE);
+            setTranslator(translators);
+        }
+
+        // TODO: 6/4/16 decide whether keep tag counts or not
+        tmp = c.getString(c.getColumnIndex(Constants.Book.TAGS));
+        if (tmp != null && tmp.equals("")) {
+            String[] tmpTags = tmp.split(Constants.Others.SEPERATE);
+            tags = new ArrayList<>();
+            Map<String, String> tagMap;
+            for (String tag:tmpTags){
+                tagMap = new HashMap<>();
+                tagMap.put("title", tag);
+                tags.add(tagMap);
+            }
+        }
+
 //        setTags(c.getString(c.getColumnIndex(Constants.Book.ID)));
     }
 

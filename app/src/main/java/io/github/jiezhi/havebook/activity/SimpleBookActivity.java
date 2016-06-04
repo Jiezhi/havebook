@@ -183,7 +183,7 @@ public class SimpleBookActivity extends BaseActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         for (Map<String, String> tagMap : doubanBook.getTags()) {
             tagTV = (TextView) inflater.inflate(R.layout.tag_textview, tagFlowLayout, false);
-            tagTV.setText(tagMap.get("name"));
+            tagTV.setText(tagMap.get("title"));
             tagFlowLayout.addView(tagTV);
         }
 

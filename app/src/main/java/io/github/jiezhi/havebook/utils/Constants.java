@@ -7,6 +7,10 @@ package io.github.jiezhi.havebook.utils;
 public class Constants {
     private static final String TAG = "Constants";
 
+    public class Others {
+        public static final String SEPERATE = "/";
+    }
+
     public class DoubanApi {
         public static final String DOUBAN_BOOK_API_V2 = "http://api.douban.com/v2/book/";
         public static final String DOUBAN_BOOK_ISBN_API = DOUBAN_BOOK_API_V2 + "isbn/";
