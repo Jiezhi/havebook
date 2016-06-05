@@ -34,7 +34,7 @@ import io.github.jiezhi.havebook.utils.ViewUtils;
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     private static final String TAG = "BookAdapter";
 
-    private final List<DoubanBook> doubanBooks;
+    private List<DoubanBook> doubanBooks;
     private Context context;
     private DoubanBook currentDoubanBook;
     private Bitmap bitmap;
@@ -47,6 +47,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     public void setOnBookClickedListener(BooksFragment.OnBookClickedListener onBookClickedListener) {
         this.onBookClickedListener = onBookClickedListener;
+    }
+
+    public void setDoubanBooks(List<DoubanBook> doubanBooks){
+        if (doubanBooks != null)
+            doubanBooks.clear();
+        this.doubanBooks = doubanBooks;
     }
 
     public BookAdapter(List<DoubanBook> doubanBooks) {

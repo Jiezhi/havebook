@@ -31,12 +31,12 @@ public class SearchActivity extends BaseActivity {
     private Bundle bundle;
     private String barTitle = "Default";
     private List<DoubanBook> doubanBooks;
+    private int state;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
-        fragment = new BooksFragment();
         bundle = new Bundle();
         handleIntent(getIntent());
 
@@ -44,7 +44,13 @@ public class SearchActivity extends BaseActivity {
 
     private void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        fragment = new BooksFragment();
         fragment.setArguments(bundle);
+        if (state == 1) { // search
+            // TODO: 6/5/16  
+        } else if (state == 2){ // collect
+            fragment.setDoubanBooks(doubanBooks);
+        }
         fragment.setToolbar(toolbar);
         getFragmentManager().beginTransaction().replace(R.id.search_frame, fragment).commit();
 
@@ -67,6 +73,7 @@ public class SearchActivity extends BaseActivity {
             // search book
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log.d(TAG, query);
+            state = 1;
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
             suggestions.saveRecentQuery(query, null);
             barTitle = "Search Result";
@@ -76,6 +83,7 @@ public class SearchActivity extends BaseActivity {
         } else if (Constants.Action.SHOW_COLLECT.equals(intent.getAction())) {
             // show collections
             Log.d(TAG, "show collect");
+            state = 2;
             MySQLiteHelper dbHelper = new MySQLiteHelper(this);
             Cursor cursor = dbHelper.query();
             DoubanBook book;
@@ -85,7 +93,6 @@ public class SearchActivity extends BaseActivity {
                 doubanBooks.add(book);
             }
             // pass the books to the fragment
-            fragment.setDoubanBooks(doubanBooks);
             cursor.close();
             dbHelper.close();
             barTitle = "My Collections";

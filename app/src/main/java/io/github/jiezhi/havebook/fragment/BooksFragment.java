@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.jiezhi.havebook.R;
@@ -50,10 +51,17 @@ public class BooksFragment extends Fragment {
 
     public static SparseArray<Bitmap> photoCache = new SparseArray<>(1);
 
+    private int start = 0;//book search start offset
+    private int count = 20;// book search count per request
+    private String keyWord;
+
     private ProgressDialog loadingDialog;
     private List<DoubanBook> doubanBooks;
     private RecyclerView bookRecycler;
+    private GridLayoutManager gridLayoutManager;
     private Toolbar toolbar;
+
+    private BookAdapter adapter;
 
     private RequestQueue requestQueue;
 
@@ -62,7 +70,8 @@ public class BooksFragment extends Fragment {
         Log.d(TAG, "toolbar:" + toolbar);
     }
 
-    public void setDoubanBooks(List<DoubanBook> doubanBooks){
+    public void setDoubanBooks(List<DoubanBook> doubanBooks) {
+
         this.doubanBooks = doubanBooks;
     }
 
@@ -71,13 +80,15 @@ public class BooksFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        doubanBooks = new ArrayList<>();
         requestQueue = MySingleton.getInstance(getActivity()).getRequestQueue();
         View rootView = inflater.inflate(R.layout.fragment_books, container, false);
 
-        // Configure recyclerview
+        // Configure recycler view
         bookRecycler = (RecyclerView) rootView.findViewById(R.id.framgment_books_recycler);
         int COLUMNS = 2;
-        bookRecycler.setLayoutManager(new GridLayoutManager(getActivity(), COLUMNS));
+        gridLayoutManager = new GridLayoutManager(getActivity(), COLUMNS);
+        bookRecycler.setLayoutManager(gridLayoutManager);
 //        bookRecycler.addItemDecoration(new RecyclerInsetDecoration(getActivity()));
         bookRecycler.addOnScrollListener(recyclerScrollListener);
         bookRecycler.setOnTouchListener(new View.OnTouchListener() {
@@ -102,8 +113,8 @@ public class BooksFragment extends Fragment {
         String action = getArguments().getString(Constants.Action.ACTION);
         if (Constants.Action.SHOW_SEARCH.equals(action)) {
             Log.d(TAG, "searching books");
-            String keyWord = getArguments().getString("keyword");
-            searchBooks(keyWord);
+            keyWord = getArguments().getString("keyword");
+            searchBooks(keyWord, 0, count);
         } else if (Constants.Action.SHOW_COLLECT.equals(action)) {
             BookAdapter adapter = new BookAdapter(doubanBooks);
             adapter.setOnBookClickedListener(onBookClickedListener);
@@ -113,8 +124,9 @@ public class BooksFragment extends Fragment {
     }
 
 
-    private void searchBooks(String keyWord) {
-        String searchurl = Constants.DoubanApi.DOUBAN_BOOK_SEARCH_API + Uri.encode(keyWord);
+    private void searchBooks(String keyWord, int start, int count) {
+        String params = String.format("?q=%s&start=%d&count=%d", Uri.encode(keyWord), start, count);
+        String searchurl = Constants.DoubanApi.DOUBAN_BOOK_SEARCH_API + params;
         Log.d(TAG, searchurl);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, searchurl, null,
                 new Response.Listener<JSONObject>() {
@@ -122,14 +134,28 @@ public class BooksFragment extends Fragment {
                     public void onResponse(JSONObject jsonObject) {
 //                        searchTV.setText(jsonObject.toString());
                         try {
-                            String count = jsonObject.getString("count");
-                            String start = jsonObject.getString("start");
-                            String total = jsonObject.getString("total");
+                            int count = jsonObject.getInt("count");
+                            int start = jsonObject.getInt("start");
+                            int total = jsonObject.getInt("total");
 //                            Log.d(TAG, "Json:" + jsonObject.toString());
+                            setStart(start);
+                            setCount(count);
                             Log.d(TAG, "count:" + count + "  start:" + start + " total:" + total);
                             JSONArray array = jsonObject.getJSONArray("books");
-                            doubanBooks = JsonUtils.parseBookFromJSONArray(array);
-                            BookAdapter adapter = new BookAdapter(doubanBooks);
+                            doubanBooks.addAll(JsonUtils.parseBookFromJSONArray(array));
+//                            doubanBooks = JsonUtils.parseBookFromJSONArray(array);
+                            if (adapter == null) {
+                                adapter = new BookAdapter(doubanBooks);
+                            } else {
+                                adapter.setDoubanBooks(doubanBooks);
+                                // FIXME: 6/4/16 
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        adapter.notifyItemInserted(doubanBooks.size() - 1);
+                                    }
+                                });
+                            }
                             adapter.setOnBookClickedListener(onBookClickedListener);
                             bookRecycler.setAdapter(adapter);
 
@@ -138,6 +164,7 @@ public class BooksFragment extends Fragment {
                         }
                         loadingDialog.dismiss();
                     }
+
                 },
                 new Response.ErrorListener() {
                     @Override
@@ -156,10 +183,21 @@ public class BooksFragment extends Fragment {
 
         public int lastDy;
         public boolean flag;
+        public int lastViewPosition;
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState == RecyclerView.SCROLL_STATE_DRAGGING && lastViewPosition + 1 == recyclerView.getAdapter().getItemCount()) {
+                Log.d(TAG, "It's time to load more data");
+//                searchBooks(keyWord, start + count, count);
+            }
+        }
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
+            lastViewPosition = gridLayoutManager.findLastVisibleItemPosition();
             if (toolbar == null)
                 return;
 //                throw new IllegalStateException("no reference of toolbar");
@@ -212,7 +250,21 @@ public class BooksFragment extends Fragment {
         toolbar.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.translate_up_off));
     }
 
+    public int getStart() {
+        return start;
+    }
 
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public interface OnBookClickedListener {
 
