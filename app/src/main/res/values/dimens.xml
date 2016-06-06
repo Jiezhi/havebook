@@ -8,4 +8,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_size">55dp</dimen>
     <dimen name="detail_backdrop_height">256dp</dimen>
+    <dimen name="insets">1dp</dimen>
 </resources>

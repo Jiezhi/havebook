@@ -1,6 +1,5 @@
 package io.github.jiezhi.havebook.fragment;
 
-import android.app.ActivityOptions;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,14 +11,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,12 +32,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.jiezhi.havebook.R;
-import io.github.jiezhi.havebook.activity.DetailActivity;
+import io.github.jiezhi.havebook.activity.SimpleBookActivity;
 import io.github.jiezhi.havebook.adapter.BookAdapter;
 import io.github.jiezhi.havebook.app.MySingleton;
 import io.github.jiezhi.havebook.model.DoubanBook;
 import io.github.jiezhi.havebook.utils.Constants;
 import io.github.jiezhi.havebook.utils.JsonUtils;
+import io.github.jiezhi.havebook.views.RecyclerInsetDecoration;
 
 /**
  * Created by jiezhi on 5/25/16.
@@ -98,6 +96,7 @@ public class BooksFragment extends Fragment {
             }
         });
 
+        bookRecycler.addItemDecoration(new RecyclerInsetDecoration(getActivity()));
 
         // Init and show progress dialog
         loadingDialog = new ProgressDialog(getActivity());
@@ -224,19 +223,24 @@ public class BooksFragment extends Fragment {
         @Override
         public void onclick(View view, int position) {
             DoubanBook selectedDoubanBook = doubanBooks.get(position);
-            Intent detailIntent = new Intent(getActivity(), DetailActivity.class);
-            detailIntent.putExtra("position", position);
-            detailIntent.putExtra("select_book", selectedDoubanBook);
 
-            ImageView coverImage = (ImageView) view.findViewById(R.id.book_item_img);
-            ((ViewGroup) coverImage.getParent()).setTransitionGroup(false);
-            photoCache.put(position, coverImage.getDrawingCache());
+            Intent intent = new Intent(getActivity(), SimpleBookActivity.class);
+            intent.putExtra("book", selectedDoubanBook);
+            startActivity(intent);
 
-            ActivityOptions options = ActivityOptions.
-                    makeSceneTransitionAnimation(getActivity(),
-                            new Pair<View, String>(coverImage, "cover" + position));
+//            Intent detailIntent = new Intent(getActivity(), DetailActivity.class);
+//            detailIntent.putExtra("position", position);
+//            detailIntent.putExtra("select_book", selectedDoubanBook);
 
-            startActivity(detailIntent, options.toBundle());
+//            ImageView coverImage = (ImageView) view.findViewById(R.id.book_item_img);
+//            ((ViewGroup) coverImage.getParent()).setTransitionGroup(false);
+//            photoCache.put(position, coverImage.getDrawingCache());
+
+//            ActivityOptions options = ActivityOptions.
+//                    makeSceneTransitionAnimation(getActivity(),
+//                            new Pair<View, String>(coverImage, "cover" + position));
+
+//            startActivity(detailIntent, options.toBundle());
         }
     };
 

@@ -338,7 +338,6 @@ public class DoubanBook implements Serializable {
                 ", authors=" + Arrays.toString(authors) +
                 ", author_intro='" + author_intro + '\'' +
                 ", binding='" + binding + '\'' +
-                ", catalog='" + catalog + '\'' +
                 ", id='" + id + '\'' +
                 ", image='" + image + '\'' +
                 ", img_large='" + img_large + '\'' +
@@ -361,6 +360,7 @@ public class DoubanBook implements Serializable {
                 ", title='" + title + '\'' +
                 ", url='" + url + '\'' +
                 ", translator=" + Arrays.toString(translator) +
+                ", catalog='" + catalog.substring(0, catalog.length() > 50 ? 50 : catalog.length()) + '\'' +
                 '}';
     }
 

@@ -1,5 +1,6 @@
 package io.github.jiezhi.havebook.activity;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -72,10 +73,6 @@ public class SimpleBookActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_detail);
 
-        String isbn = getIntent().getStringExtra("isbn");
-        if (isbn == null) isbn = "9787115416292";
-        Log.d(TAG, "isbn: " + isbn);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -83,13 +80,22 @@ public class SimpleBookActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle(isbn);
-//        collapsingToolbarLayout.setContentScrim(getDrawable(R.drawable.heart_b));
 
         initView();
-        getBookInfoByISBN(isbn);
+        Intent intent = getIntent();
+        doubanBook = (DoubanBook) intent.getSerializableExtra("book");
+        if (doubanBook != null) { // start from book list
+            Log.d(TAG, doubanBook.toString());
+            loadBookData(doubanBook);
+        } else {// start from scan activity
+            String isbn = intent.getStringExtra("isbn");
+            if (isbn == null) isbn = "9787115416292";
+            Log.d(TAG, "isbn: " + isbn);
+            collapsingToolbarLayout.setTitle(isbn);
+            getBookInfoByISBN(isbn);
+        }
+
     }
 
     private void initView() {
