@@ -73,8 +73,15 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     public Cursor query() {
-        if (db == null) db = getWritableDatabase();
+        if (db == null) db = getReadableDatabase();
         return db.query(TABLE_LIKED_BOOK, null, null, null, null, null, null);
+    }
+
+    public boolean isLiked(String isbn) {
+        if (db == null) db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_LIKED_BOOK, new String[]{Constants.Book.ID, Constants.Book.ISBN13},
+                Constants.Book.ISBN13 + "=?", new String[]{isbn}, null, null, null);
+        return cursor.moveToPosition(0);
     }
 
 

@@ -85,18 +85,23 @@ public class SimpleBookActivity extends BaseActivity {
         initView();
         Intent intent = getIntent();
         doubanBook = (DoubanBook) intent.getSerializableExtra("book");
+        String isbn;
         if (doubanBook != null) { // start from book list
             Log.d(TAG, doubanBook.toString());
             loadBookData(doubanBook);
+            isbn = doubanBook.getIsbn13();
         } else {// start from scan activity
-            String isbn = intent.getStringExtra("isbn");
+            isbn = intent.getStringExtra("isbn");
             if (isbn == null) isbn = "9787115416292";
             Log.d(TAG, "isbn: " + isbn);
             collapsingToolbarLayout.setTitle(isbn);
             getBookInfoByISBN(isbn);
         }
 
+        checkBookLiked(isbn);
+
     }
+
 
     private void initView() {
         bookCover = (ImageView) findViewById(R.id.book_cover);
@@ -119,15 +124,13 @@ public class SimpleBookActivity extends BaseActivity {
             public void onClick(View v) {
                 Message msg = new Message();
                 if (isLiked) { // Cancel collect the book
-                    isLiked = false;
                     msg.arg1 = DEL_LIKED_BOOK;
+                    setLiked(!isLiked);
                     Snackbar.make(v, "Book deleted from your collect", Snackbar.LENGTH_SHORT).show();
-                    faButton.setImageDrawable(getDrawable(R.drawable.ic_menu_heart_like));
                 } else { // add the book to collect
-                    isLiked = true;
+                    setLiked(!isLiked);
                     msg.arg1 = ADD_LIKED_BOOK;
                     Snackbar.make(v, "Book added from your collect", Snackbar.LENGTH_SHORT).show();
-                    faButton.setImageDrawable(getDrawable(R.drawable.ic_menu_heart_liked));
                 }
 
                 Bundle bundle = new Bundle();
@@ -150,6 +153,34 @@ public class SimpleBookActivity extends BaseActivity {
         });
     }
 
+    private void setLiked(boolean isLike) {
+        this.isLiked = isLike;
+        if (faButton == null) return;
+        if (isLike) {
+            faButton.setImageDrawable(getDrawable(R.drawable.ic_menu_heart_liked));
+        } else {
+            faButton.setImageDrawable(getDrawable(R.drawable.ic_menu_heart_like));
+        }
+    }
+
+    private void checkBookLiked(final String isbn) {
+        final MySQLiteHelper mySQLiteHelper = new MySQLiteHelper(this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (mySQLiteHelper.isLiked(isbn)) {
+                    Log.d(TAG, "this book is in liked list");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            faButton.setImageDrawable(getDrawable(R.drawable.ic_menu_heart_liked));
+                        }
+                    });
+                }
+                mySQLiteHelper.close();
+            }
+        }).start();
+    }
     private void getBookInfoByISBN(String isbn) {
         if (isbn == null || isbn.length() < 10) {
             Log.e(TAG, "isbn error:");
@@ -218,6 +249,10 @@ public class SimpleBookActivity extends BaseActivity {
             @Override
             public void onGenerated(Palette palette) {
                 Palette.Swatch swatch = palette.getVibrantSwatch();
+                if (swatch == null) {
+                    Log.e(TAG, "swatch is null");
+                    return;
+                }
                 appbarLayout.setBackgroundColor(swatch.getRgb());
                 bookTitle.setTextColor(swatch.getTitleTextColor());
 
@@ -243,6 +278,6 @@ public class SimpleBookActivity extends BaseActivity {
      * if no content
      */
     private void setNoContentView() {
-
+        // TODO: 6/11/16
     }
 }
