@@ -78,7 +78,8 @@ public class BooksFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        doubanBooks = new ArrayList<>();
+        if (doubanBooks == null)
+            doubanBooks = new ArrayList<>();
         requestQueue = MySingleton.getInstance(getActivity()).getRequestQueue();
         View rootView = inflater.inflate(R.layout.fragment_books, container, false);
 
@@ -109,7 +110,15 @@ public class BooksFragment extends Fragment {
     }
 
     private void getBooksInfo() {
-        String action = getArguments().getString(Constants.Action.ACTION);
+        String action;
+        try {
+            action = getArguments().getString(Constants.Action.ACTION);
+            Log.d(TAG, "action:" + action);
+        } catch (NullPointerException e) {
+            Log.e(TAG, "There's no arguments passed to books fragment");
+            loadingDialog.dismiss();
+            return;
+        }
         if (Constants.Action.SHOW_SEARCH.equals(action)) {
             Log.d(TAG, "searching books");
             keyWord = getArguments().getString("keyword");

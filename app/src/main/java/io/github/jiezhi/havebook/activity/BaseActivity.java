@@ -1,5 +1,6 @@
 package io.github.jiezhi.havebook.activity;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -33,6 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected RequestQueue requestQueue;
     private Context context;
     private MySQLiteHelper sqLiteHelper;
+    protected ProgressDialog dialog;
 
     protected static final String BOOK_RELATED = "bookRelated";
     protected static final int ADD_LIKED_BOOK = 1;
@@ -43,12 +45,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         @Override
         public boolean handleMessage(Message msg) {
             DoubanBook book;
+            if (sqLiteHelper == null)
+                sqLiteHelper = new MySQLiteHelper(context);
             switch (msg.arg1) {
                 case ADD_LIKED_BOOK:
                     book = (DoubanBook) msg.getData().getSerializable(BOOK_RELATED);
                     ContentValues cv = getContentValuesFromBook(book);
                     // TODO: 6/3/16 Change sqlitehelper to singleton
-                    sqLiteHelper = new MySQLiteHelper(context);
                     sqLiteHelper.insert(cv);
                     break;
                 case DEL_LIKED_BOOK:
@@ -59,7 +62,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                     break;
             }
-            if (sqLiteHelper != null) sqLiteHelper.close();
             return true;
         }
     });
@@ -130,6 +132,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         requestQueue = MySingleton.getInstance(this).getRequestQueue();
 
+        dialog = new ProgressDialog(this);
+
     }
 
 
@@ -172,5 +176,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if (sqLiteHelper != null) sqLiteHelper.close();
     }
 }

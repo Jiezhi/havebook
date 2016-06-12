@@ -173,7 +173,7 @@ public class SimpleBookActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            faButton.setImageDrawable(getDrawable(R.drawable.ic_menu_heart_liked));
+                            setLiked(true);
                         }
                     });
                 }
@@ -218,10 +218,15 @@ public class SimpleBookActivity extends BaseActivity {
 
         TextView tagTV;
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (Map<String, String> tagMap : doubanBook.getTags()) {
-            tagTV = (TextView) inflater.inflate(R.layout.tag_textview, tagFlowLayout, false);
-            tagTV.setText(tagMap.get("title"));
-            tagFlowLayout.addView(tagTV);
+        if (doubanBook.getTags() != null) {
+
+            for (Map<String, String> tagMap : doubanBook.getTags()) {
+                tagTV = (TextView) inflater.inflate(R.layout.tag_textview, tagFlowLayout, false);
+                tagTV.setText(tagMap.get("title"));
+                tagFlowLayout.addView(tagTV);
+            }
+        } else {
+            tagFlowLayout.setVisibility(View.GONE);
         }
 
         ImageRequest imageRequest = new ImageRequest(doubanBook.getImg_large(),

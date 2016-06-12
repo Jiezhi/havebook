@@ -39,7 +39,6 @@ public class SearchActivity extends BaseActivity {
         setContentView(R.layout.search_activity);
         bundle = new Bundle();
         handleIntent(getIntent());
-
     }
 
     private void initView() {

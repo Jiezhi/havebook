@@ -26,4 +26,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="my_collections">我的收藏</string>
+    <string name="you_don_t_have_any_book">您还未收藏任何图书\n点击右下角按钮添加</string>
 </resources>
