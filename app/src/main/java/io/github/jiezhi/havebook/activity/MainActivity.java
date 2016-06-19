@@ -23,7 +23,6 @@ import java.util.List;
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.db.MySQLiteHelper;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
-import io.github.jiezhi.havebook.model.DoubanBook;
 import io.github.jiezhi.havebook.utils.Constants;
 
 public class MainActivity extends BaseActivity

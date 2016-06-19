@@ -32,9 +32,12 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+import de.greenrobot.dao.async.AsyncSession;
 import io.github.jiezhi.havebook.R;
+import io.github.jiezhi.havebook.dao.DaoSession;
+import io.github.jiezhi.havebook.db.MyDBHelper;
+import io.github.jiezhi.havebook.dao.DoubanBook;
 import io.github.jiezhi.havebook.db.MySQLiteHelper;
-import io.github.jiezhi.havebook.model.DoubanBook;
 import io.github.jiezhi.havebook.utils.Constants;
 import io.github.jiezhi.havebook.utils.JsonUtils;
 import io.github.jiezhi.havebook.views.FlowLayout;
@@ -67,6 +70,8 @@ public class SimpleBookActivity extends BaseActivity {
     private SQLiteDatabase db;
 
     private DoubanBook doubanBook = null;
+    private AsyncSession doubanBookAsyncSession;
+    private AsyncSession myBookAsyncSession;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,6 +105,10 @@ public class SimpleBookActivity extends BaseActivity {
 
         checkBookLiked(isbn);
 
+
+        DaoSession daoSession = MyDBHelper.getInstance(this).getDaoSession();
+        doubanBookAsyncSession = daoSession.getDoubanBookDao().getSession().startAsyncSession();
+        myBookAsyncSession = daoSession.getMyBookDao().getSession().startAsyncSession();
     }
 
 
@@ -127,16 +136,19 @@ public class SimpleBookActivity extends BaseActivity {
                     msg.arg1 = DEL_LIKED_BOOK;
                     setLiked(!isLiked);
                     Snackbar.make(v, "Book deleted from your collect", Snackbar.LENGTH_SHORT).show();
+                    // FIXME: 6/19/16
+                    myBookAsyncSession.insertOrReplace(doubanBook);
                 } else { // add the book to collect
                     setLiked(!isLiked);
                     msg.arg1 = ADD_LIKED_BOOK;
                     Snackbar.make(v, "Book added from your collect", Snackbar.LENGTH_SHORT).show();
+                    myBookAsyncSession.delete(doubanBook);
                 }
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(BOOK_RELATED, doubanBook);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(BOOK_RELATED, doubanBook);
+//                msg.setData(bundle);
+//                handler.sendMessage(msg);
             }
         });
 

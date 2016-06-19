@@ -24,7 +24,6 @@ import java.util.List;
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.app.MySingleton;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
-import io.github.jiezhi.havebook.model.DoubanBook;
 import io.github.jiezhi.havebook.utils.ViewUtils;
 
 /**

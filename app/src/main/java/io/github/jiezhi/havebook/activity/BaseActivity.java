@@ -16,13 +16,10 @@ import android.view.MenuItem;
 
 import com.android.volley.RequestQueue;
 
-import java.util.List;
-import java.util.Map;
-
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.app.MySingleton;
+import io.github.jiezhi.havebook.dao.DoubanBook;
 import io.github.jiezhi.havebook.db.MySQLiteHelper;
-import io.github.jiezhi.havebook.model.DoubanBook;
 import io.github.jiezhi.havebook.utils.Constants;
 
 /**
@@ -90,32 +87,32 @@ public abstract class BaseActivity extends AppCompatActivity {
         cv.put(Constants.Book.ALT_TITLE, book.getAlt_title());
 
         // save authors, translators and tags into one column separately
-        String[] authors = book.getAuthors();
-        if (authors != null) {
-            StringBuilder sb = new StringBuilder(authors.length);
-            for (String author : authors) {
-                sb.append(author).append(Constants.Others.SEPERATE);
-            }
-            cv.put(Constants.Book.AUTHOR, sb.toString());
-        }
-        String[] translators = book.getTranslator();
-        if (translators != null) {
-            StringBuilder sb = new StringBuilder(translators.length);
-            for (String translator : translators) {
-                sb.append(translator).append(Constants.Others.SEPERATE);
-            }
-            cv.put(Constants.Book.TRANSLATOR, sb.toString());
-        }
-
-        List<Map<String, String>> tags = book.getTags();
-        if (tags != null) {
-            int tagCount = tags.size();
-            StringBuilder sb = new StringBuilder(tagCount);
-            for (Map<String, String> tag : tags) {
-                sb.append(tag.get("title")).append(Constants.Others.SEPERATE);
-            }
-            cv.put(Constants.Book.TAGS, sb.toString());
-        }
+//        String[] authors = book.getAuthors();
+//        if (authors != null) {
+//            StringBuilder sb = new StringBuilder(authors.length);
+//            for (String author : authors) {
+//                sb.append(author).append(Constants.Others.SEPERATE);
+//            }
+//            cv.put(Constants.Book.AUTHOR, sb.toString());
+//        }
+//        String[] translators = book.getTranslator();
+//        if (translators != null) {
+//            StringBuilder sb = new StringBuilder(translators.length);
+//            for (String translator : translators) {
+//                sb.append(translator).append(Constants.Others.SEPERATE);
+//            }
+//            cv.put(Constants.Book.TRANSLATOR, sb.toString());
+//        }
+//
+//        List<Map<String, String>> tags = book.getTags();
+//        if (tags != null) {
+//            int tagCount = tags.size();
+//            StringBuilder sb = new StringBuilder(tagCount);
+//            for (Map<String, String> tag : tags) {
+//                sb.append(tag.get("title")).append(Constants.Others.SEPERATE);
+//            }
+//            cv.put(Constants.Book.TAGS, sb.toString());
+//        }
 
         cv.put(Constants.Book.RATING_AVERAGE, book.getRatingAverage());
         cv.put(Constants.Book.RATING_MAX, book.getRatingMax());

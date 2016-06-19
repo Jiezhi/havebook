@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
-import io.github.jiezhi.havebook.model.DoubanBook;
 import io.github.jiezhi.havebook.utils.ViewUtils;
 
 /**

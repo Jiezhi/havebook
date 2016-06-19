@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.jiezhi.havebook.model.DoubanBook;
-
 /**
  * Created by jiezhi on 5/25/16.
  * Function:
