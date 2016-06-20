@@ -23,7 +23,9 @@ import java.util.List;
 
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.app.MySingleton;
+import io.github.jiezhi.havebook.dao.DoubanBook;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
+import io.github.jiezhi.havebook.utils.Constants;
 import io.github.jiezhi.havebook.utils.ViewUtils;
 
 /**
@@ -75,7 +77,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         currentDoubanBook = doubanBooks.get(position);
         holder.bookTitle.setText(currentDoubanBook.getTitle());
         StringBuilder sb = new StringBuilder();
-        String[] authors = currentDoubanBook.getAuthors();
+        String[] authors = currentDoubanBook.getAuthors().split(Constants.Others.SEPERATE);
         for (String author : authors)
             sb.append(author).append(" ");
         holder.bookAuthor.setText(sb.toString());

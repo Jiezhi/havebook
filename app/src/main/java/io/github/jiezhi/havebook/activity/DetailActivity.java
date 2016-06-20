@@ -20,7 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.github.jiezhi.havebook.R;
+import io.github.jiezhi.havebook.dao.DoubanBook;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
+import io.github.jiezhi.havebook.utils.Constants;
 import io.github.jiezhi.havebook.utils.ViewUtils;
 
 /**
@@ -104,7 +106,7 @@ public class DetailActivity extends BaseActivity {
         String content = book.getSummary();
         if (content != null) contentTextView.setText(content);
         titleTextView.setText(book.getTitle());
-        String[] authors = book.getAuthors();
+        String[] authors = book.getAuthors().split(Constants.Others.SEPERATE);
         StringBuilder sb = new StringBuilder();
         for (String author : authors) {
             sb.append(author).append(" ");

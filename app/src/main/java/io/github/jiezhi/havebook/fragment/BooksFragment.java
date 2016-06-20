@@ -35,6 +35,7 @@ import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.activity.SimpleBookActivity;
 import io.github.jiezhi.havebook.adapter.BookAdapter;
 import io.github.jiezhi.havebook.app.MySingleton;
+import io.github.jiezhi.havebook.dao.DoubanBook;
 import io.github.jiezhi.havebook.utils.Constants;
 import io.github.jiezhi.havebook.utils.JsonUtils;
 import io.github.jiezhi.havebook.views.RecyclerInsetDecoration;

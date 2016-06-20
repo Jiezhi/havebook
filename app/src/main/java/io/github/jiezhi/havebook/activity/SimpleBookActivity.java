@@ -30,21 +30,21 @@ import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import org.json.JSONObject;
 
-import java.util.Map;
+import java.util.List;
 
 import de.greenrobot.dao.async.AsyncSession;
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.dao.DaoSession;
-import io.github.jiezhi.havebook.db.MyDBHelper;
 import io.github.jiezhi.havebook.dao.DoubanBook;
-import io.github.jiezhi.havebook.db.MySQLiteHelper;
+import io.github.jiezhi.havebook.dao.DoubanBookDao;
+import io.github.jiezhi.havebook.db.MyDBHelper;
 import io.github.jiezhi.havebook.utils.Constants;
 import io.github.jiezhi.havebook.utils.JsonUtils;
 import io.github.jiezhi.havebook.views.FlowLayout;
 
 /**
  * Created by jiezhi on 5/26/16.
- * Function:
+ * Function: Display book
  */
 public class SimpleBookActivity extends BaseActivity {
     private static final String TAG = "SimpleBookActivity";
@@ -66,7 +66,6 @@ public class SimpleBookActivity extends BaseActivity {
 
     private boolean isLiked = false;
 
-    private MySQLiteHelper sqliteHelper;
     private SQLiteDatabase db;
 
     private DoubanBook doubanBook = null;
@@ -128,6 +127,13 @@ public class SimpleBookActivity extends BaseActivity {
         faButton = (FloatingActionButton) findViewById(R.id.fab);
 
         // Switch of book collection
+        faButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Snackbar.make(v, "long click", Snackbar.LENGTH_SHORT).show();
+                return true;
+            }
+        });
         faButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,24 +181,31 @@ public class SimpleBookActivity extends BaseActivity {
         }
     }
 
-    private void checkBookLiked(final String isbn) {
-        final MySQLiteHelper mySQLiteHelper = new MySQLiteHelper(this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (mySQLiteHelper.isLiked(isbn)) {
-                    Log.d(TAG, "this book is in liked list");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setLiked(true);
-                        }
-                    });
-                }
-                mySQLiteHelper.close();
-            }
-        }).start();
+    private void checkBookLiked(String isbn) {
+        // TODO: 6/20/16
+        DoubanBookDao doubanBookDao = MyDBHelper.getInstance(this).getDaoSession().getDoubanBookDao();
+        List<DoubanBook> list = doubanBookDao.queryBuilder().where(DoubanBookDao.Properties.Isbn13.eq(isbn)).list();
+        Log.d(TAG, "list size:" + list.size());
+        if (list.size() > 0) {
+            setLiked(true);
+        }
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (mySQLiteHelper.isLiked(isbn)) {
+//                    Log.d(TAG, "this book is in liked list");
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            setLiked(true);
+//                        }
+//                    });
+//                }
+//                mySQLiteHelper.close();
+//            }
+//        }).start();
     }
+
     private void getBookInfoByISBN(String isbn) {
         if (isbn == null || isbn.length() < 10) {
             Log.e(TAG, "isbn error:");
@@ -228,15 +241,8 @@ public class SimpleBookActivity extends BaseActivity {
         collapsingToolbarLayout.setTitle(doubanBook.getTitle());
         catalogExpandableTextView.setText(doubanBook.getCatalog());
 
-        TextView tagTV;
-        LayoutInflater inflater = LayoutInflater.from(this);
         if (doubanBook.getTags() != null) {
-
-            for (Map<String, String> tagMap : doubanBook.getTags()) {
-                tagTV = (TextView) inflater.inflate(R.layout.tag_textview, tagFlowLayout, false);
-                tagTV.setText(tagMap.get("title"));
-                tagFlowLayout.addView(tagTV);
-            }
+            loadTags();
         } else {
             tagFlowLayout.setVisibility(View.GONE);
         }
@@ -259,6 +265,24 @@ public class SimpleBookActivity extends BaseActivity {
 
         // make the button clickable after data loaded
         faButton.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Load book tags
+     */
+    private void loadTags() {
+        TextView tagTV;
+        LayoutInflater inflater = LayoutInflater.from(this);
+        String[] tags = doubanBook.getTags().split(Constants.Others.SEPERATE);
+        String tagName;
+        if (tags.length > 0) {
+            for (String tag : tags) {
+                tagName = tag.split("_")[0];
+                tagTV = (TextView) inflater.inflate(R.layout.tag_textview, tagFlowLayout, false);
+                tagTV.setText(tagName);
+                tagFlowLayout.addView(tagTV);
+            }
+        }
     }
 
     private void setPalette(Bitmap bitmap) {

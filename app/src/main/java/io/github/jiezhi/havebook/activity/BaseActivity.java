@@ -19,7 +19,6 @@ import com.android.volley.RequestQueue;
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.app.MySingleton;
 import io.github.jiezhi.havebook.dao.DoubanBook;
-import io.github.jiezhi.havebook.db.MySQLiteHelper;
 import io.github.jiezhi.havebook.utils.Constants;
 
 /**
@@ -30,7 +29,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     protected RequestQueue requestQueue;
     private Context context;
-    private MySQLiteHelper sqLiteHelper;
     protected ProgressDialog dialog;
 
     protected static final String BOOK_RELATED = "bookRelated";
@@ -41,24 +39,24 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            DoubanBook book;
-            if (sqLiteHelper == null)
-                sqLiteHelper = new MySQLiteHelper(context);
-            switch (msg.arg1) {
-                case ADD_LIKED_BOOK:
-                    book = (DoubanBook) msg.getData().getSerializable(BOOK_RELATED);
-                    ContentValues cv = getContentValuesFromBook(book);
-                    // TODO: 6/3/16 Change sqlitehelper to singleton
-                    sqLiteHelper.insert(cv);
-                    break;
-                case DEL_LIKED_BOOK:
-                    book = (DoubanBook) msg.getData().getSerializable(BOOK_RELATED);
-                    sqLiteHelper.delete(book.getId());
-                    break;
-                case QUERY_LIKED_BOOK:
-
-                    break;
-            }
+//            DoubanBook book;
+//            if (sqLiteHelper == null)
+//                sqLiteHelper = new MySQLiteHelper2(context);
+//            switch (msg.arg1) {
+//                case ADD_LIKED_BOOK:
+//                    book = (DoubanBook) msg.getData().getSerializable(BOOK_RELATED);
+//                    ContentValues cv = getContentValuesFromBook(book);
+//                    // TODO: 6/3/16 Change sqlitehelper to singleton
+//                    sqLiteHelper.insert(cv);
+//                    break;
+//                case DEL_LIKED_BOOK:
+//                    book = (DoubanBook) msg.getData().getSerializable(BOOK_RELATED);
+//                    sqLiteHelper.delete(book.getId());
+//                    break;
+//                case QUERY_LIKED_BOOK:
+//
+//                    break;
+//            }
             return true;
         }
     });
@@ -173,6 +171,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (sqLiteHelper != null) sqLiteHelper.close();
+//        if (sqLiteHelper != null) sqLiteHelper.close();
     }
 }

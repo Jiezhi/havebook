@@ -26,4 +26,6 @@
 * [OpenLibra-Material](https://github.com/saulmm/OpenLibra-Material)
 * [barcodescanner](https://github.com/dm77/barcodescanner)
 * [ExpandableTextView](https://github.com/Manabu-GT/ExpandableTextView)
+* [greenDAO](https://github.com/greenrobot/greenDAO)
+* [Volley](https://android.googlesource.com/platform/frameworks/volley/)
 

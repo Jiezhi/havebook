@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,11 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.github.jiezhi.havebook.R;
-import io.github.jiezhi.havebook.db.MySQLiteHelper;
+import io.github.jiezhi.havebook.dao.DoubanBook;
+import io.github.jiezhi.havebook.dao.DoubanBookDao;
+import io.github.jiezhi.havebook.db.MyDBHelper;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
 import io.github.jiezhi.havebook.utils.Constants;
 
@@ -58,17 +58,8 @@ public class MainActivity extends BaseActivity
         bundle.putString(Constants.Action.ACTION, Constants.Action.SHOW_COLLECT);
         fragment.setArguments(bundle);
         // get collections from db
-        MySQLiteHelper dbHelper = new MySQLiteHelper(this);
-        Cursor cursor = dbHelper.query();
-        DoubanBook book;
-        List<DoubanBook> doubanBooks = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            book = new DoubanBook(cursor);
-            doubanBooks.add(book);
-        }
-        // pass the books to the fragment
-        cursor.close();
-        dbHelper.close();
+        DoubanBookDao doubanBookDao = MyDBHelper.getInstance(this).getDaoSession().getDoubanBookDao();
+        List<DoubanBook> doubanBooks = doubanBookDao.loadAll();
         Log.d(TAG, "collected books:" + doubanBooks.size());
         if (doubanBooks.size() == 0) { // no book display no content view
             textView.setVisibility(View.VISIBLE);

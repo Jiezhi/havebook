@@ -1,13 +1,16 @@
 package io.github.jiezhi.havebook.utils;
 
+import android.support.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.github.jiezhi.havebook.dao.DoubanBook;
 
 /**
  * Created by jiezhi on 5/25/16.
@@ -75,16 +78,28 @@ public class JsonUtils {
             // for tags map
             JSONArray tagArray = object.getJSONArray("tags");
             int len = tagArray.length();
-            List<Map<String, String>> tagList = new ArrayList<>(len);
-            for (int i = 0; i < len; i++) {
-                bookInfoMap = new HashMap<>();
-                bookInfoMap.put("count", tagArray.getJSONObject(i).getString("count"));
-                bookInfoMap.put("name", tagArray.getJSONObject(i).getString("name"));
-                bookInfoMap.put("title", tagArray.getJSONObject(i).getString("title"));
-                tagList.add(bookInfoMap);
-            }
-            doubanBook.setTags(tagList);
+            if (len == 0) {
+                doubanBook.setTags("");
+            } else {
+                StringBuilder sb = new StringBuilder();
+//            List<Map<String, String>> tagList = new ArrayList<>(len);
+                for (int i = 0; i < len - 1; i++) {
+//                bookInfoMap = new HashMap<>();
+//                bookInfoMap.put("count", tagArray.getJSONObject(i).getString("count"));
+//                bookInfoMap.put("name", tagArray.getJSONObject(i).getString("name"));
+//                bookInfoMap.put("title", tagArray.getJSONObject(i).getString("title"));
+//                tagList.add(bookInfoMap);
+                    sb.append(tagArray.getJSONObject(i).getString("name"))
+                            .append("_")
+                            .append(tagArray.getJSONObject(i).getString("count"));
+                    sb.append(Constants.Others.SEPERATE);
+                }
+                sb.append(tagArray.getJSONObject(len - 1).getString("name"))
+                        .append("_")
+                        .append(tagArray.getJSONObject(len - 1).getString("count"));
 
+                doubanBook.setTags(sb.toString());
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -94,17 +109,22 @@ public class JsonUtils {
     }
 
 
-    public static String[] getBookDetailList(JSONArray array) {
+    @NonNull
+    public static String getBookDetailList(JSONArray array) {
         int len = array.length();
-        String[] lists = new String[len];
+        if (len == 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
         try {
-            for (int i = 0; i < len; i++) {
-                lists[i] = array.getString(i);
+            for (int i = 0; i < len - 1; i++) {
+                sb.append(array.getString(i)).append(Constants.Others.SEPERATE);
             }
+            sb.append(array.getString(len - 1));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return lists;
+        return sb.toString();
     }
 
 }
