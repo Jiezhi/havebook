@@ -12,7 +12,7 @@ public class Constants {
     }
 
     public class DoubanApi {
-        public static final String DOUBAN_BOOK_API_V2 = "http://api.douban.com/v2/book/";
+        public static final String DOUBAN_BOOK_API_V2 = "https://api.douban.com/v2/book/";
         public static final String DOUBAN_BOOK_ISBN_API = DOUBAN_BOOK_API_V2 + "isbn/";
         public static final String DOUBAN_BOOK_SEARCH_API = DOUBAN_BOOK_API_V2 + "search";
     }
