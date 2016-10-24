@@ -23,9 +23,8 @@ import java.util.List;
 
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.app.MySingleton;
-import io.github.jiezhi.havebook.dao.DoubanBook;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
-import io.github.jiezhi.havebook.utils.Constants;
+import io.github.jiezhi.havebook.model.DoubanBookModel;
 import io.github.jiezhi.havebook.utils.ViewUtils;
 
 /**
@@ -35,9 +34,9 @@ import io.github.jiezhi.havebook.utils.ViewUtils;
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     private static final String TAG = "BookAdapter";
 
-    private List<DoubanBook> doubanBooks;
+    private List<DoubanBookModel> doubanBooks;
     private Context context;
-    private DoubanBook currentDoubanBook;
+    private DoubanBookModel currentDoubanBook;
     private Bitmap bitmap;
     private int defaultbkgcolor;
     private static final int SCALE_DELAY = 30;
@@ -50,13 +49,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         this.onBookClickedListener = onBookClickedListener;
     }
 
-    public void setDoubanBooks(List<DoubanBook> doubanBooks){
+    public void setDoubanBooks(List<DoubanBookModel> doubanBooks) {
         if (doubanBooks != null)
             doubanBooks.clear();
         this.doubanBooks = doubanBooks;
     }
 
-    public BookAdapter(List<DoubanBook> doubanBooks) {
+    public BookAdapter(List<DoubanBookModel> doubanBooks) {
         this.doubanBooks = doubanBooks;
     }
 
@@ -75,16 +74,18 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         currentDoubanBook = doubanBooks.get(position);
+        Log.d(TAG, "onBindViewHolder:" + position);
+        Log.d(TAG, "currentBook:" + currentDoubanBook.toString());
         holder.bookTitle.setText(currentDoubanBook.getTitle());
         StringBuilder sb = new StringBuilder();
-        String[] authors = currentDoubanBook.getAuthors().split(Constants.Others.SEPERATE);
-        for (String author : authors)
+//        String[] authors = currentDoubanBook.getA.getAuthors().split(Constants.Others.SEPERATE);
+        for (String author : currentDoubanBook.getAuthor())
             sb.append(author).append(" ");
         holder.bookAuthor.setText(sb.toString());
         holder.bookCover.setDrawingCacheEnabled(true);
 //        bitmap = holder.bookCover.getDrawingCache();
 
-        ImageRequest imageRequest = new ImageRequest(currentDoubanBook.getImg_large(),
+        ImageRequest imageRequest = new ImageRequest(currentDoubanBook.getImages().getLarge(),
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap bitmap) {
@@ -141,6 +142,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
+        if (doubanBooks == null) return 0;
         return doubanBooks.size();
     }
 

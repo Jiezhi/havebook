@@ -19,10 +19,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import io.github.jiezhi.havebook.R;
-import io.github.jiezhi.havebook.dao.DoubanBook;
-import io.github.jiezhi.havebook.dao.DoubanBookDao;
-import io.github.jiezhi.havebook.db.MyDBHelper;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
+import io.github.jiezhi.havebook.model.DoubanBookModel;
 import io.github.jiezhi.havebook.utils.Constants;
 
 public class MainActivity extends BaseActivity
@@ -58,10 +56,11 @@ public class MainActivity extends BaseActivity
         bundle.putString(Constants.Action.ACTION, Constants.Action.SHOW_COLLECT);
         fragment.setArguments(bundle);
         // get collections from db
-        DoubanBookDao doubanBookDao = MyDBHelper.getInstance(this).getDaoSession().getDoubanBookDao();
-        List<DoubanBook> doubanBooks = doubanBookDao.loadAll();
-        Log.d(TAG, "collected books:" + doubanBooks.size());
-        if (doubanBooks.size() == 0) { // no book display no content view
+//        DoubanBookDao doubanBookDao = MyDBHelper.getInstance(this).getDaoSession().getDoubanBookDao();
+        List<DoubanBookModel> doubanBooks = null;
+//        List<DoubanBookModel> doubanBooks = doubanBookDao.loadAll();
+        if (doubanBooks == null || doubanBooks.size() == 0) { // no book display no content view
+//            Log.d(TAG, "collected books:" + doubanBooks.size());
             textView.setVisibility(View.VISIBLE);
             fab.setVisibility(View.VISIBLE);
         } else {

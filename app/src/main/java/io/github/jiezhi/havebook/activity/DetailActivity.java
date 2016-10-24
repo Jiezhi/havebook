@@ -20,9 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.github.jiezhi.havebook.R;
-import io.github.jiezhi.havebook.dao.DoubanBook;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
-import io.github.jiezhi.havebook.utils.Constants;
+import io.github.jiezhi.havebook.model.DoubanBookModel;
 import io.github.jiezhi.havebook.utils.ViewUtils;
 
 /**
@@ -32,7 +31,7 @@ import io.github.jiezhi.havebook.utils.ViewUtils;
 public class DetailActivity extends BaseActivity {
     private static final String TAG = "DetailActivity";
 
-    private DoubanBook book;
+    private DoubanBookModel book;
     private FloatingActionButton faButton;
     private FrameLayout contentCard;
     private View mainContainer;
@@ -58,7 +57,7 @@ public class DetailActivity extends BaseActivity {
         initView();
 
         int position = getIntent().getIntExtra("position", 0);
-        book = (DoubanBook) getIntent().getSerializableExtra("select_book");
+        book = (DoubanBookModel) getIntent().getSerializableExtra("select_book");
 
 
         final Bitmap bookCover = BooksFragment.photoCache.get(position);
@@ -74,7 +73,6 @@ public class DetailActivity extends BaseActivity {
         setEnterAnimation();
 
         fillBookInfo();
-        
 
 
         // Generate palette colors
@@ -106,13 +104,12 @@ public class DetailActivity extends BaseActivity {
         String content = book.getSummary();
         if (content != null) contentTextView.setText(content);
         titleTextView.setText(book.getTitle());
-        String[] authors = book.getAuthors().split(Constants.Others.SEPERATE);
         StringBuilder sb = new StringBuilder();
-        for (String author : authors) {
+        for (String author : book.getAuthor()) {
             sb.append(author).append(" ");
         }
         subtitleTextView.setText(sb.toString());
-        ratingValueTextView.setText(book.getRatingAverage() + "/10");
+        ratingValueTextView.setText(book.getRating().getAverage() + "/10");
     }
 
     private void setEnterAnimation() {

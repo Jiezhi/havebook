@@ -12,10 +12,8 @@ import android.util.Log;
 import java.util.List;
 
 import io.github.jiezhi.havebook.R;
-import io.github.jiezhi.havebook.dao.DoubanBook;
-import io.github.jiezhi.havebook.dao.DoubanBookDao;
-import io.github.jiezhi.havebook.db.MyDBHelper;
 import io.github.jiezhi.havebook.fragment.BooksFragment;
+import io.github.jiezhi.havebook.model.DoubanBookModel;
 import io.github.jiezhi.havebook.provider.MySuggestionProvider;
 import io.github.jiezhi.havebook.utils.Constants;
 
@@ -29,7 +27,7 @@ public class SearchActivity extends BaseActivity {
     private BooksFragment fragment;
     private Bundle bundle;
     private String barTitle = "Default";
-    private List<DoubanBook> doubanBooks;
+    private List<DoubanBookModel> doubanBooks;
     private int state;
 
     @Override
@@ -46,7 +44,7 @@ public class SearchActivity extends BaseActivity {
         fragment.setArguments(bundle);
         if (state == 1) { // search
             // TODO: 6/5/16  
-        } else if (state == 2){ // collect
+        } else if (state == 2) { // collect
             fragment.setDoubanBooks(doubanBooks);
         }
         fragment.setToolbar(toolbar);
@@ -82,8 +80,9 @@ public class SearchActivity extends BaseActivity {
             // show collections
             Log.d(TAG, "show collect");
             state = 2;
-            DoubanBookDao doubanBookDao = MyDBHelper.getInstance(this).getDaoSession().getDoubanBookDao();
-            doubanBooks = doubanBookDao.loadAll();
+            // TODO: 24/10/2016 replace db
+//            DoubanBookDao doubanBookDao = MyDBHelper.getInstance(this).getDaoSession().getDoubanBookDao();
+            doubanBooks = null;
 //            MySQLiteHelper2 dbHelper = new MySQLiteHelper2(this);
 //            Cursor cursor = dbHelper.query();
 //            DoubanBook book;

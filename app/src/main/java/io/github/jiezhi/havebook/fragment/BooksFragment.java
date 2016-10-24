@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,27 +17,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.jiezhi.havebook.R;
 import io.github.jiezhi.havebook.activity.SimpleBookActivity;
 import io.github.jiezhi.havebook.adapter.BookAdapter;
 import io.github.jiezhi.havebook.app.MySingleton;
-import io.github.jiezhi.havebook.dao.DoubanBook;
+import io.github.jiezhi.havebook.model.DoubanBookModel;
+import io.github.jiezhi.havebook.model.DoubanSearchModel;
+import io.github.jiezhi.havebook.retrofit.DoubanBookClient;
+import io.github.jiezhi.havebook.retrofit.ServiceGenerator;
 import io.github.jiezhi.havebook.utils.Constants;
-import io.github.jiezhi.havebook.utils.JsonUtils;
 import io.github.jiezhi.havebook.views.RecyclerInsetDecoration;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by jiezhi on 5/25/16.
@@ -54,7 +53,7 @@ public class BooksFragment extends Fragment {
     private String keyWord;
 
     private ProgressDialog loadingDialog;
-    private List<DoubanBook> doubanBooks;
+    private List<DoubanBookModel> doubanBooks;
     private RecyclerView bookRecycler;
     private GridLayoutManager gridLayoutManager;
     private Toolbar toolbar;
@@ -68,7 +67,7 @@ public class BooksFragment extends Fragment {
         Log.d(TAG, "toolbar:" + toolbar);
     }
 
-    public void setDoubanBooks(List<DoubanBook> doubanBooks) {
+    public void setDoubanBooks(List<DoubanBookModel> doubanBooks) {
 
         this.doubanBooks = doubanBooks;
     }
@@ -122,7 +121,8 @@ public class BooksFragment extends Fragment {
         if (Constants.Action.SHOW_SEARCH.equals(action)) {
             Log.d(TAG, "searching books");
             keyWord = getArguments().getString("keyword");
-            searchBooks(keyWord, 0, count);
+//            searchBooks(keyWord, 0, count);
+            searchBook(keyWord, 0, count);
         } else if (Constants.Action.SHOW_COLLECT.equals(action)) {
             BookAdapter adapter = new BookAdapter(doubanBooks);
             adapter.setOnBookClickedListener(onBookClickedListener);
@@ -131,12 +131,53 @@ public class BooksFragment extends Fragment {
         }
     }
 
+    private void searchBook(String keyword, int start, int count) {
+        final DoubanBookClient doubanBookClient = ServiceGenerator.createService(DoubanBookClient.class, TAG, false);
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("q", keyword);
+        queryMap.put("start", String.valueOf(start));
+        queryMap.put("count", String.valueOf(count));
+        Observable<DoubanSearchModel> searchObservable = doubanBookClient
+                .searchBook(queryMap)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
+        searchObservable.subscribe(new Subscriber<DoubanSearchModel>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "onCompleted");
+                loadingDialog.dismiss();
+            }
 
+            @Override
+            public void onError(Throwable e) {
+                loadingDialog.dismiss();
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(DoubanSearchModel doubanSearchModel) {
+                Log.d(TAG, "on next:" + doubanSearchModel.toString());
+                doubanBooks = doubanSearchModel.getBooks();
+                if (adapter == null) {
+                    adapter = new BookAdapter(doubanBooks);
+                } else {
+                    adapter.setDoubanBooks(doubanBooks);
+
+                    adapter.notifyItemInserted(doubanBooks.size() - 1);
+                }
+                adapter.setOnBookClickedListener(onBookClickedListener);
+                bookRecycler.setAdapter(adapter);
+            }
+        });
+    }
+
+
+    /*
     private void searchBooks(String keyWord, int start, int count) {
         String params = String.format("?q=%s&start=%d&count=%d", Uri.encode(keyWord), start, count);
-        String searchurl = Constants.DoubanApi.DOUBAN_BOOK_SEARCH_API + params;
-        Log.d(TAG, searchurl);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, searchurl, null,
+        String searchUrl = Constants.DoubanApi.DOUBAN_BOOK_SEARCH_API + params;
+        Log.d(TAG, searchUrl);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, searchUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
@@ -186,6 +227,7 @@ public class BooksFragment extends Fragment {
 
         requestQueue.add(request);
     }
+    */
 
     private RecyclerView.OnScrollListener recyclerScrollListener = new RecyclerView.OnScrollListener() {
 
@@ -231,7 +273,7 @@ public class BooksFragment extends Fragment {
     private OnBookClickedListener onBookClickedListener = new OnBookClickedListener() {
         @Override
         public void onclick(View view, int position) {
-            DoubanBook selectedDoubanBook = doubanBooks.get(position);
+            DoubanBookModel selectedDoubanBook = doubanBooks.get(position);
 
             Intent intent = new Intent(getActivity(), SimpleBookActivity.class);
             intent.putExtra("book", selectedDoubanBook);

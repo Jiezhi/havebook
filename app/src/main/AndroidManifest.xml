@@ -63,7 +63,7 @@
             android:label="@string/title_activity_login" />
 
         <service android:name="com.amap.api.location.APSService" />
-        <meta-data android:name="com.amap.api.v2.apikey" android:value="key"/>
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="72c88231bcd54449b62e8b51a8bf8dff"/>
     </application>
 
     <!-- Below permissions are required by amap-->

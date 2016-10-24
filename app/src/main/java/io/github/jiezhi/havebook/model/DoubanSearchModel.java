@@ -14,7 +14,7 @@ public class DoubanSearchModel {
     private int start;
     private int count;
     private int total;
-    private List<DoubanBookModel> bookList;
+    private List<DoubanBookModel> books;
 
     public int getStart() {
         return start;
@@ -40,11 +40,22 @@ public class DoubanSearchModel {
         this.total = total;
     }
 
-    public List<DoubanBookModel> getBookList() {
-        return bookList;
+
+    public List<DoubanBookModel> getBooks() {
+        return books;
     }
 
-    public void setBookList(List<DoubanBookModel> bookList) {
-        this.bookList = bookList;
+    public void setBooks(List<DoubanBookModel> books) {
+        this.books = books;
+    }
+
+    @Override
+    public String toString() {
+        return "DoubanSearchModel{" +
+                "start=" + start +
+                ", count=" + count +
+                ", total=" + total +
+                ", bookList=" + books +
+                '}';
     }
 }

@@ -39,7 +39,6 @@ dependencies {
     compile 'com.android.support:palette-v7:24.2.1'
     compile 'me.dm7.barcodescanner:zbar:1.8.4'
     compile 'com.ms-square:expandableTextView:0.1.4'
-    compile 'org.greenrobot:greendao:2.2.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'io.reactivex:rxandroid:1.2.1'

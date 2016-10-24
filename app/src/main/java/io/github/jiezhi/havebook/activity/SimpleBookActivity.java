@@ -21,25 +21,13 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
-import org.json.JSONObject;
-
-import java.util.List;
-
-import de.greenrobot.dao.async.AsyncSession;
 import io.github.jiezhi.havebook.R;
-import io.github.jiezhi.havebook.dao.DaoSession;
-import io.github.jiezhi.havebook.dao.DoubanBook;
-import io.github.jiezhi.havebook.dao.DoubanBookDao;
-import io.github.jiezhi.havebook.db.MyDBHelper;
-import io.github.jiezhi.havebook.utils.Constants;
-import io.github.jiezhi.havebook.utils.JsonUtils;
+import io.github.jiezhi.havebook.model.DoubanBookModel;
 import io.github.jiezhi.havebook.views.FlowLayout;
 
 /**
@@ -68,9 +56,7 @@ public class SimpleBookActivity extends BaseActivity {
 
     private SQLiteDatabase db;
 
-    private DoubanBook doubanBook = null;
-    private AsyncSession doubanBookAsyncSession;
-    private AsyncSession myBookAsyncSession;
+    private DoubanBookModel doubanBook = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,7 +74,7 @@ public class SimpleBookActivity extends BaseActivity {
 
         initView();
         Intent intent = getIntent();
-        doubanBook = (DoubanBook) intent.getSerializableExtra("book");
+        doubanBook = (DoubanBookModel) intent.getSerializableExtra("book");
         String isbn;
         if (doubanBook != null) { // start from book list
             Log.d(TAG, doubanBook.toString());
@@ -105,9 +91,6 @@ public class SimpleBookActivity extends BaseActivity {
         checkBookLiked(isbn);
 
 
-        DaoSession daoSession = MyDBHelper.getInstance(this).getDaoSession();
-        doubanBookAsyncSession = daoSession.getDoubanBookDao().getSession().startAsyncSession();
-        myBookAsyncSession = daoSession.getMyBookDao().getSession().startAsyncSession();
     }
 
 
@@ -142,13 +125,10 @@ public class SimpleBookActivity extends BaseActivity {
                     msg.arg1 = DEL_LIKED_BOOK;
                     setLiked(!isLiked);
                     Snackbar.make(v, "Book deleted from your collect", Snackbar.LENGTH_SHORT).show();
-                    // FIXME: 6/19/16
-                    myBookAsyncSession.insertOrReplace(doubanBook);
                 } else { // add the book to collect
                     setLiked(!isLiked);
                     msg.arg1 = ADD_LIKED_BOOK;
                     Snackbar.make(v, "Book added from your collect", Snackbar.LENGTH_SHORT).show();
-                    myBookAsyncSession.delete(doubanBook);
                 }
 
 //                Bundle bundle = new Bundle();
@@ -181,8 +161,10 @@ public class SimpleBookActivity extends BaseActivity {
         }
     }
 
+
     private void checkBookLiked(String isbn) {
         // TODO: 6/20/16
+        /*
         DoubanBookDao doubanBookDao = MyDBHelper.getInstance(this).getDaoSession().getDoubanBookDao();
         List<DoubanBook> list = doubanBookDao.queryBuilder().where(DoubanBookDao.Properties.Isbn13.eq(isbn)).list();
         Log.d(TAG, "list size:" + list.size());
@@ -204,6 +186,7 @@ public class SimpleBookActivity extends BaseActivity {
 //                mySQLiteHelper.close();
 //            }
 //        }).start();
+*/
     }
 
     private void getBookInfoByISBN(String isbn) {
@@ -213,6 +196,8 @@ public class SimpleBookActivity extends BaseActivity {
             return;
         }
 
+        // FIXME: 24/10/2016
+        /*
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Constants.DoubanApi.DOUBAN_BOOK_ISBN_API + isbn, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -232,9 +217,10 @@ public class SimpleBookActivity extends BaseActivity {
 
         jsonObjectRequest.setTag(TAG);
         requestQueue.add(jsonObjectRequest);
+        */
     }
 
-    private void loadBookData(DoubanBook doubanBook) {
+    private void loadBookData(DoubanBookModel doubanBook) {
         bookTitle.setText(doubanBook.getTitle());
         bookPublisher.setText(doubanBook.getPublisher());
         summaryExpandableTextView.setText(doubanBook.getSummary());
@@ -247,7 +233,7 @@ public class SimpleBookActivity extends BaseActivity {
             tagFlowLayout.setVisibility(View.GONE);
         }
 
-        ImageRequest imageRequest = new ImageRequest(doubanBook.getImg_large(),
+        ImageRequest imageRequest = new ImageRequest(doubanBook.getImages().getLarge(),
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap bitmap) {
@@ -273,15 +259,12 @@ public class SimpleBookActivity extends BaseActivity {
     private void loadTags() {
         TextView tagTV;
         LayoutInflater inflater = LayoutInflater.from(this);
-        String[] tags = doubanBook.getTags().split(Constants.Others.SEPERATE);
         String tagName;
-        if (tags.length > 0) {
-            for (String tag : tags) {
-                tagName = tag.split("_")[0];
-                tagTV = (TextView) inflater.inflate(R.layout.tag_textview, tagFlowLayout, false);
-                tagTV.setText(tagName);
-                tagFlowLayout.addView(tagTV);
-            }
+        for (DoubanBookModel.TagsEntity tag : doubanBook.getTags()) {
+            tagName = tag.getName();
+            tagTV = (TextView) inflater.inflate(R.layout.tag_textview, tagFlowLayout, false);
+            tagTV.setText(tagName);
+            tagFlowLayout.addView(tagTV);
         }
     }
 
